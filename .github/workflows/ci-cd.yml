@@ -22,7 +22,6 @@ jobs:
           username: deploy@taskgo.live
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /public_html/
+          server-dir: ./
           protocol: ftp
           port: 21
-          dangerous-clean-slate: true
