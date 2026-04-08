@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('currencies', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 3)->unique(); // USD, EUR, GBP, etc.
+            $table->string('code', 10)->unique(); // USD, EUR, GBP, USDT, etc.
             $table->string('name'); // US Dollar, Euro, etc.
             $table->string('symbol', 10); // $, €, £, etc.
             $table->string('symbol_position', 10)->default('before'); // before or after
