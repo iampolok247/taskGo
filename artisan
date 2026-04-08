@@ -1,0 +1,20 @@
+<?php
+
+// Suppress PHP 8.5 deprecation warnings
+error_reporting(E_ALL & ~E_DEPRECATED);
+
+// Create a simple artisan file
+require __DIR__.'/vendor/autoload.php';
+
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput,
+    new Symfony\Component\Console\Output\ConsoleOutput
+);
+
+$kernel->terminate($input, $status);
+
+exit($status);

@@ -1,0 +1,48 @@
+# Laravel .gitignore
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# Vendor directory (install via composer)
+/vendor/
+
+# Node modules (if any)
+/node_modules/
+
+# Compiled assets
+/public/build/
+/public/hot
+/public/storage
+
+# Storage (logs, cache, sessions)
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Cache and compiled
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitkeep
+
+# IDE and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Testing
+.phpunit.result.cache
+phpunit.xml
+
+# Misc
+npm-debug.log
+yarn-error.log
+
+# macOS artifacts
+__MACOSX/
+
+# Error logs
+error_log

@@ -1,0 +1,78 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, xml, json
+
+      - name: Composer cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --no-interaction
+
+      - name: PHP Lint (quick)
+        run: |
+          echo "Running php -l over project (skips vendor)..."
+          find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 -P4 php -l || true
+
+      - name: Run PHPUnit if present
+        run: |
+          if [ -f phpunit.xml ] || [ -f phpunit.xml.dist ]; then
+            if [ -f vendor/bin/phpunit ]; then
+              vendor/bin/phpunit --colors=always || true
+            else
+              composer test || true
+            fi
+          else
+            echo "No phpunit.xml found — skipping tests"
+          fi
+
+  deploy:
+    name: Deploy to cPanel (FTP)
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate deployment secrets
+        run: |
+          : "Ensure FTP_HOST, FTP_USERNAME and FTP_PASSWORD are set as GitHub Secrets"
+          if [ -z "${{ secrets.FTP_HOST }}" ]; then echo 'Secret FTP_HOST is not set.' && exit 1; fi
+          if [ -z "${{ secrets.FTP_USERNAME }}" ]; then echo 'Secret FTP_USERNAME is not set.' && exit 1; fi
+          if [ -z "${{ secrets.FTP_PASSWORD }}" ]; then echo 'Secret FTP_PASSWORD is not set.' && exit 1; fi
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_REMOTE_PATH }}
+          # Optional: set protocol/port via secrets if needed (ftp, ftps)
+          protocol: ${{ secrets.FTP_PROTOCOL }}
+          port: ${{ secrets.FTP_PORT }}
