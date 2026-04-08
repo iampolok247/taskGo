@@ -24,32 +24,44 @@ return new class extends Migration
         });
 
         // Add currency_code to users, agents, and admins
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('currency_code', 3)->default('USD')->after('status');
-        });
+        if (!Schema::hasColumn('users', 'currency_code')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('currency_code', 3)->default('USD');
+            });
+        }
 
-        Schema::table('agents', function (Blueprint $table) {
-            $table->string('currency_code', 3)->default('USD')->after('status');
-        });
+        if (!Schema::hasColumn('agents', 'currency_code')) {
+            Schema::table('agents', function (Blueprint $table) {
+                $table->string('currency_code', 3)->default('USD');
+            });
+        }
 
-        Schema::table('admins', function (Blueprint $table) {
-            $table->string('currency_code', 3)->default('USD')->after('status');
-        });
+        if (!Schema::hasColumn('admins', 'currency_code')) {
+            Schema::table('admins', function (Blueprint $table) {
+                $table->string('currency_code', 3)->default('USD');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('currency_code');
-        });
+        if (Schema::hasColumn('users', 'currency_code')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('currency_code');
+            });
+        }
 
-        Schema::table('agents', function (Blueprint $table) {
-            $table->dropColumn('currency_code');
-        });
+        if (Schema::hasColumn('agents', 'currency_code')) {
+            Schema::table('agents', function (Blueprint $table) {
+                $table->dropColumn('currency_code');
+            });
+        }
 
-        Schema::table('admins', function (Blueprint $table) {
-            $table->dropColumn('currency_code');
-        });
+        if (Schema::hasColumn('admins', 'currency_code')) {
+            Schema::table('admins', function (Blueprint $table) {
+                $table->dropColumn('currency_code');
+            });
+        }
 
         Schema::dropIfExists('currencies');
     }
