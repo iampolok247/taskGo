@@ -29,31 +29,32 @@
             <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold text-gray-900 mb-4">Submission Proof</h3>
                 
-                @if($submission->proof_type === 'screenshot' && $submission->proof_data)
+                @if($submission->proof_image)
                 <div class="mb-4">
-                    <a href="{{ asset('storage/' . $submission->proof_data) }}" target="_blank">
-                        <img src="{{ asset('storage/' . $submission->proof_data) }}" alt="Proof Screenshot" class="w-full rounded-xl border">
+                    <a href="{{ asset('storage/' . $submission->proof_image) }}" target="_blank">
+                        <img src="{{ asset('storage/' . $submission->proof_image) }}" alt="Proof Screenshot" class="w-full rounded-xl border">
                     </a>
-                </div>
-                @elseif($submission->proof_type === 'url')
-                <div class="mb-4 p-4 bg-gray-50 rounded-xl">
-                    <p class="text-sm text-gray-500 mb-1">Submitted URL:</p>
-                    <a href="{{ $submission->proof_data }}" target="_blank" class="text-primary-600 hover:underline break-all">
-                        {{ $submission->proof_data }}
-                    </a>
-                </div>
-                @elseif($submission->proof_type === 'text')
-                <div class="mb-4 p-4 bg-gray-50 rounded-xl">
-                    <p class="text-sm text-gray-500 mb-1">Submitted Text:</p>
-                    <p class="text-gray-900">{{ $submission->proof_data }}</p>
                 </div>
                 @endif
 
-                @if($submission->notes)
+                @if($submission->proof_url)
+                <div class="mb-4 p-4 bg-gray-50 rounded-xl">
+                    <p class="text-sm text-gray-500 mb-1">Submitted URL:</p>
+                    <a href="{{ $submission->proof_url }}" target="_blank" class="text-primary-600 hover:underline break-all">
+                        {{ $submission->proof_url }}
+                    </a>
+                </div>
+                @endif
+
+                @if($submission->proof_text)
                 <div class="p-4 bg-gray-50 rounded-xl">
                     <p class="text-sm text-gray-500 mb-1">User Notes:</p>
-                    <p class="text-gray-700">{{ $submission->notes }}</p>
+                    <p class="text-gray-700">{{ $submission->proof_text }}</p>
                 </div>
+                @endif
+
+                @if(!$submission->proof_image && !$submission->proof_url && !$submission->proof_text)
+                <p class="text-gray-500">No proof submitted</p>
                 @endif
             </div>
 
@@ -179,7 +180,17 @@
                     </div>
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Proof Type</span>
-                        <span class="font-medium capitalize">{{ $submission->proof_type }}</span>
+                        <span class="font-medium capitalize">
+                            @if($submission->proof_image)
+                                Screenshot
+                            @elseif($submission->proof_url)
+                                URL
+                            @elseif($submission->proof_text)
+                                Text
+                            @else
+                                N/A
+                            @endif
+                        </span>
                     </div>
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Submitted</span>

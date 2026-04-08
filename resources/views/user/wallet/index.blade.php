@@ -32,8 +32,8 @@
                     <p class="font-bold text-lg mt-1">৳{{ number_format($wallet->main_balance ?? 0, 2) }}</p>
                 </div>
                 <div class="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
-                    <p class="text-primary-200 text-[10px] uppercase tracking-wide">🎁 Bonus</p>
-                    <p class="font-bold text-lg mt-1">৳{{ number_format($wallet->bonus_balance ?? 0, 2) }}</p>
+                    <p class="text-primary-200 text-[10px] uppercase tracking-wide">🎁 Total Deposited</p>
+                    <p class="font-bold text-lg mt-1">৳{{ number_format($wallet->total_deposited ?? 0, 2) }}</p>
                 </div>
             </div>
         </div>

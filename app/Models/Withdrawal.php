@@ -49,6 +49,11 @@ class Withdrawal extends Model
         return $this->belongsTo(Admin::class, 'processed_by');
     }
 
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class, 'method', 'code');
+    }
+
     public function transactions()
     {
         return $this->morphMany(Transaction::class, 'transactionable');

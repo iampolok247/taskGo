@@ -110,16 +110,16 @@
             <div class="space-y-4">
                 <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-4 text-white">
                     <p class="text-sm opacity-90">Current Balance</p>
-                    <p class="text-2xl font-bold">৳{{ number_format($user->wallet->balance, 2) }}</p>
+                    <p class="text-2xl font-bold">৳{{ number_format($user->wallet->main_balance ?? 0, 2) }}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 rounded-lg p-3">
                         <p class="text-gray-500 text-sm">Total Earned</p>
-                        <p class="font-bold text-green-600">৳{{ number_format($user->wallet->total_earned, 2) }}</p>
+                        <p class="font-bold text-green-600">৳{{ number_format($user->wallet->total_earned ?? 0, 2) }}</p>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-3">
                         <p class="text-gray-500 text-sm">Total Withdrawn</p>
-                        <p class="font-bold text-red-600">৳{{ number_format($user->wallet->total_withdrawn, 2) }}</p>
+                        <p class="font-bold text-red-600">৳{{ number_format($user->wallet->total_withdrawn ?? 0, 2) }}</p>
                     </div>
                 </div>
             </div>
