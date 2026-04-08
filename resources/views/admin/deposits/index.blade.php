@@ -147,7 +147,6 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Reject Deposit</h3>
         <form id="rejectForm" method="POST">
             @csrf
-            @method('PATCH')
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rejection Reason</label>
                 <textarea name="rejection_reason" rows="3" required

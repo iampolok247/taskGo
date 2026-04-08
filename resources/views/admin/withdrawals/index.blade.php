@@ -112,7 +112,6 @@
                                         <div class="flex items-center justify-end gap-2">
                                             <form action="{{ route('admin.withdrawals.approve', $withdrawal) }}" method="POST" class="inline">
                                                 @csrf
-                                                @method('PATCH')
                                                 <button type="submit" class="text-green-600 hover:text-green-900">Approve</button>
                                             </form>
                                             <button type="button" onclick="openRejectModal({{ $withdrawal->id }})" class="text-red-600 hover:text-red-900">Reject</button>
@@ -149,7 +148,6 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Reject Withdrawal</h3>
         <form id="rejectForm" method="POST">
             @csrf
-            @method('PATCH')
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Rejection Reason</label>
                 <textarea name="rejection_reason" rows="3" required
