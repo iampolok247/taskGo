@@ -152,7 +152,7 @@
                 <!-- Wallet Balance -->
                 <div class="mt-4 bg-white/10 rounded-xl p-3">
                     <p class="text-white/70 text-xs">Wallet Balance</p>
-                    <p class="text-2xl font-bold">৳{{ number_format(auth()->user()->wallet->balance ?? 0, 2) }}</p>
+                    <p class="text-2xl font-bold">৳{{ number_format(auth()->user()->wallet->main_balance ?? 0, 2) }}</p>
                 </div>
             </div>
 

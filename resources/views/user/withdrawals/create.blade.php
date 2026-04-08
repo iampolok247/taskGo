@@ -73,9 +73,9 @@
                 <div class="space-y-2">
                     @foreach($paymentMethods as $method)
                         <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all">
-                            <input type="radio" name="payment_method_id" value="{{ $method->id }}" 
+                            <input type="radio" name="method" value="{{ $method->code }}" 
                                 class="w-4 h-4 text-primary-500 focus:ring-primary-500"
-                                {{ old('payment_method_id') == $method->id ? 'checked' : '' }}>
+                                {{ old('method') == $method->code ? 'checked' : '' }}>
                             <div class="flex-1">
                                 <p class="font-medium text-gray-900">{{ $method->name }}</p>
                             </div>
@@ -85,7 +85,7 @@
                         </label>
                     @endforeach
                 </div>
-                @error('payment_method_id')
+                @error('method')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
