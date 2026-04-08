@@ -53,7 +53,7 @@ class TaskController extends Controller
         $todayEarnings = TaskSubmission::where('user_id', $user->id)
             ->whereDate('created_at', today())
             ->where('status', 'approved')
-            ->sum('earned_amount');
+            ->sum('reward_amount');
 
         return view('user.tasks.index', compact('tasks', 'userSubmissions', 'categories', 'todayCompleted', 'dailyLimit', 'todayEarnings'));
     }
