@@ -31,7 +31,7 @@
             <p class="text-xs text-gray-500">Tasks Done</p>
         </div>
         <div class="bg-white rounded-xl p-3 shadow-sm text-center">
-            <p class="text-2xl font-bold text-green-500">৳{{ number_format($stats['total_earned'], 0) }}</p>
+            <p class="text-2xl font-bold text-green-500">{{ format_currency($stats['total_earned']) }}</p>
             <p class="text-xs text-gray-500">Total Earned</p>
         </div>
         <div class="bg-white rounded-xl p-3 shadow-sm text-center">
@@ -65,6 +65,16 @@
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
+
+            <!-- Currency Selection -->
+            <x-currency-dropdown 
+                name="currency_code" 
+                :selected="$user->currency_code ?? 'USD'" 
+                label="Preferred Currency"
+            />
+            @error('currency_code')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
             
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>

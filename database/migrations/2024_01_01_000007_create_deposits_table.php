@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 15, 2);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->decimal('converted_amount', 15, 2)->nullable();
             $table->string('converted_currency', 10)->nullable();
             $table->string('method'); // bkash, nagad, rocket, bank_transfer, binance_usdt, etc.

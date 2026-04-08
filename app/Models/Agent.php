@@ -23,6 +23,7 @@ class Agent extends Authenticatable
         'pending_earnings',
         'withdrawn_earnings',
         'status',
+        'currency_code',
         'address',
         'profile_photo',
     ];
@@ -105,5 +106,30 @@ class Agent extends Authenticatable
     public function getActiveUsersAttribute()
     {
         return $this->users()->where('status', 'active')->count();
+    }
+
+    /**
+     * Get the agent's currency
+     */
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+    }
+
+    /**
+     * Get the agent's currency object
+     */
+    public function getCurrencyAttribute()
+    {
+        return Currency::getByCode($this->currency_code ?? 'USD') ?? Currency::getDefault();
+    }
+
+    /**
+     * Format amount in agent's currency
+     */
+    public function formatCurrency($amount): string
+    {
+        $currency = $this->getCurrencyAttribute();
+        return $currency ? $currency->format($amount) : '$' . number_format($amount, 2);
     }
 }

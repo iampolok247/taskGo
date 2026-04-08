@@ -15,7 +15,7 @@ return new class extends Migration
             $table->text('instructions');
             $table->string('task_url')->nullable();
             $table->decimal('reward', 15, 2);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->enum('category', ['social', 'survey', 'video', 'app', 'website', 'other'])->default('other');
             $table->integer('daily_limit')->default(0);
             $table->integer('total_limit')->default(0);

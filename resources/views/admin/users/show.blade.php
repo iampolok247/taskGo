@@ -38,15 +38,15 @@
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Total Deposits</p>
-            <p class="text-xl font-bold text-green-600">৳{{ number_format($stats['total_deposits'], 2) }}</p>
+            <p class="text-xl font-bold text-green-600">{{ format_currency($stats['total_deposits']) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Total Withdrawals</p>
-            <p class="text-xl font-bold text-red-600">৳{{ number_format($stats['total_withdrawals'], 2) }}</p>
+            <p class="text-xl font-bold text-red-600">{{ format_currency($stats['total_withdrawals']) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Total Earned</p>
-            <p class="text-xl font-bold text-primary-600">৳{{ number_format($stats['total_earned'], 2) }}</p>
+            <p class="text-xl font-bold text-primary-600">{{ format_currency($stats['total_earned']) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Tasks Completed</p>
@@ -110,16 +110,16 @@
             <div class="space-y-4">
                 <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-4 text-white">
                     <p class="text-sm opacity-90">Current Balance</p>
-                    <p class="text-2xl font-bold">৳{{ number_format($user->wallet->main_balance ?? 0, 2) }}</p>
+                    <p class="text-2xl font-bold">{{ format_currency($user->wallet->main_balance ?? 0) }}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 rounded-lg p-3">
                         <p class="text-gray-500 text-sm">Total Earned</p>
-                        <p class="font-bold text-green-600">৳{{ number_format($user->wallet->total_earned ?? 0, 2) }}</p>
+                        <p class="font-bold text-green-600">{{ format_currency($user->wallet->total_earned ?? 0) }}</p>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-3">
                         <p class="text-gray-500 text-sm">Total Withdrawn</p>
-                        <p class="font-bold text-red-600">৳{{ number_format($user->wallet->total_withdrawn ?? 0, 2) }}</p>
+                        <p class="font-bold text-red-600">{{ format_currency($user->wallet->total_withdrawn ?? 0) }}</p>
                     </div>
                 </div>
             </div>
@@ -139,7 +139,7 @@
                         <p class="text-xs text-gray-500">{{ $transaction->created_at->format('M d, H:i') }}</p>
                     </div>
                     <span class="{{ $transaction->type === 'credit' || $transaction->type === 'earning' ? 'text-green-600' : 'text-red-600' }} font-medium">
-                        {{ $transaction->type === 'credit' || $transaction->type === 'earning' ? '+' : '-' }}৳{{ number_format($transaction->amount, 2) }}
+                        {{ $transaction->type === 'credit' || $transaction->type === 'earning' ? '+' : '-' }}{{ format_currency($transaction->amount) }}
                     </span>
                 </div>
                 @empty
@@ -169,7 +169,7 @@
                     <tbody class="divide-y">
                         @forelse($user->deposits->take(5) as $deposit)
                         <tr>
-                            <td class="px-4 py-3 font-medium">৳{{ number_format($deposit->amount, 2) }}</td>
+                            <td class="px-4 py-3 font-medium">{{ format_currency($deposit->amount) }}</td>
                             <td class="px-4 py-3 text-gray-500">{{ $deposit->payment_method }}</td>
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 text-xs rounded-full {{ $deposit->status === 'approved' ? 'bg-green-100 text-green-700' : ($deposit->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') }}">
@@ -206,7 +206,7 @@
                     <tbody class="divide-y">
                         @forelse($user->withdrawals->take(5) as $withdrawal)
                         <tr>
-                            <td class="px-4 py-3 font-medium">৳{{ number_format($withdrawal->amount, 2) }}</td>
+                            <td class="px-4 py-3 font-medium">{{ format_currency($withdrawal->amount) }}</td>
                             <td class="px-4 py-3 text-gray-500">{{ $withdrawal->payment_method }}</td>
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 text-xs rounded-full {{ $withdrawal->status === 'completed' ? 'bg-green-100 text-green-700' : ($withdrawal->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') }}">
@@ -250,7 +250,7 @@
                 </select>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Amount (৳)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount ({{ currency_symbol() }})</label>
                 <input type="number" name="amount" step="0.01" min="1" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
             </div>
             <div>

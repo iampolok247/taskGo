@@ -29,6 +29,16 @@
                 @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
+            <!-- Currency Selection -->
+            <x-currency-dropdown 
+                name="currency_code" 
+                :selected="auth()->guard('agent')->user()->currency_code ?? 'USD'" 
+                label="Preferred Currency"
+            />
+            @error('currency_code')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+
             <button type="submit" class="w-full py-3 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 transition-all">
                 Update Profile
             </button>

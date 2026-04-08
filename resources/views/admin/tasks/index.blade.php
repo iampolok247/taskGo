@@ -34,7 +34,7 @@
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-sm text-gray-500">Total Paid Out</p>
-            <p class="text-2xl font-bold text-blue-600">৳{{ number_format($stats['total_paid']) }}</p>
+            <p class="text-2xl font-bold text-blue-600">{{ format_currency($stats['total_paid']) }}</p>
         </div>
     </div>
 
@@ -107,7 +107,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-green-600">৳{{ number_format($task->reward, 2) }}</div>
+                                    <div class="text-sm font-medium text-green-600">{{ format_currency($task->reward, 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $task->approved_submissions_count ?? 0 }}/{{ $task->total_limit ?: '∞' }}</div>

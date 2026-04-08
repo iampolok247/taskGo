@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\CurrencyRate;
 use App\Models\Deposit;
 use App\Models\Transaction;
 use App\Models\Withdrawal;
@@ -32,29 +31,11 @@ class WalletController extends Controller
             ->where('status', 'completed')
             ->sum('amount');
 
-        // Get USDT Rate
-        $usdtRate = CurrencyRate::where('from_currency', 'USD')
-            ->where('to_currency', 'BDT')
-            ->value('rate') ?? 120;
-
-        // Currency conversions
-        $conversions = [];
-        $currencies = ['USD', 'USDT'];
-        
-        foreach ($currencies as $currency) {
-            $result = CurrencyRate::convert($wallet->main_balance ?? 0, 'BDT', $currency, false);
-            if ($result) {
-                $conversions[$currency] = $result['converted'];
-            }
-        }
-
         return view('user.wallet.index', compact(
             'wallet', 
             'transactions', 
-            'conversions',
             'totalDeposits',
-            'totalWithdrawals',
-            'usdtRate'
+            'totalWithdrawals'
         ));
     }
 
@@ -86,21 +67,5 @@ class WalletController extends Controller
         ];
 
         return view('user.wallet.transactions', compact('transactions', 'types'));
-    }
-
-    public function convert()
-    {
-        $user = Auth::user();
-        $wallet = $user->wallet;
-
-        // Get all currency rates
-        $rates = CurrencyRate::where('is_active', true)->get();
-
-        // Get USDT Rate
-        $usdtRate = CurrencyRate::where('from_currency', 'USD')
-            ->where('to_currency', 'BDT')
-            ->value('rate') ?? 120;
-
-        return view('user.wallet.convert', compact('wallet', 'rates', 'usdtRate'));
     }
 }

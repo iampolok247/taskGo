@@ -66,7 +66,7 @@
                             <div class="text-purple-200 text-sm">Active Users</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold text-white">৳50L+</div>
+                            <div class="text-3xl font-bold text-white">$50K+</div>
                             <div class="text-purple-200 text-sm">Paid Out</div>
                         </div>
                         <div class="text-center">
@@ -85,7 +85,7 @@
                                     <i class="fas fa-coins text-4xl text-purple-900"></i>
                                 </div>
                                 <div class="text-white text-2xl font-bold mb-2">Earn Daily</div>
-                                <div class="text-purple-200">৳500 - ৳5000</div>
+                                <div class="text-purple-200">$5 - $50</div>
                             </div>
                         </div>
                         

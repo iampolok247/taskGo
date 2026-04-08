@@ -66,7 +66,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-sm font-semibold {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                            {{ $transaction->amount > 0 ? '+' : '' }}৳{{ number_format(abs($transaction->amount), 2) }}
+                            {{ $transaction->amount > 0 ? '+' : '' }}{{ format_currency(abs($transaction->amount)) }}
                         </p>
                         <span class="text-xs px-2 py-0.5 rounded-full
                             @if($transaction->status == 'completed') bg-green-100 text-green-700

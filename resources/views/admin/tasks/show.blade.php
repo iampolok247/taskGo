@@ -37,7 +37,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Reward</p>
-            <p class="text-xl font-bold text-green-600">৳{{ number_format($task->reward, 2) }}</p>
+            <p class="text-xl font-bold text-green-600">{{ format_currency($task->reward, 2) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Total Submissions</p>
@@ -200,7 +200,7 @@
                 <h3 class="font-semibold text-gray-900 mb-4">Earnings Paid</h3>
                 <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
                     <p class="text-sm opacity-90">Total Paid to Users</p>
-                    <p class="text-2xl font-bold">৳{{ number_format($task->approved_submissions_count * $task->reward, 2) }}</p>
+                    <p class="text-2xl font-bold">{{ format_currency($task->approved_submissions_count * $task->reward, 2) }}</p>
                 </div>
             </div>
         </div>

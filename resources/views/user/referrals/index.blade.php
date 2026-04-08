@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between mb-4">
             <div>
                 <p class="text-purple-100 text-sm">Total Referral Earnings</p>
-                <h2 class="text-3xl font-bold">৳{{ number_format($totalEarnings, 2) }}</h2>
+                <h2 class="text-3xl font-bold">{{ format_currency($totalEarnings, 2) }}</h2>
             </div>
             <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@
                     <p class="text-sm font-medium text-gray-900">Sign-up Bonus</p>
                     <p class="text-xs text-gray-500">Earn when your referral signs up</p>
                 </div>
-                <p class="font-bold text-green-600">৳{{ number_format($signupBonus, 2) }}</p>
+                <p class="font-bold text-green-600">{{ format_currency($signupBonus, 2) }}</p>
             </div>
             <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
@@ -120,7 +120,7 @@
                             @else
                                 <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs font-medium rounded-full">Inactive</span>
                             @endif
-                            <p class="text-xs text-gray-500 mt-1">৳{{ number_format($referral->total_earned, 2) }} earned</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ format_currency($referral->total_earned, 2) }} earned</p>
                         </div>
                     </div>
                 @endforeach

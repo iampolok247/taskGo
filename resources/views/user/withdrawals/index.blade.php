@@ -21,7 +21,7 @@
     <!-- Available Balance Card -->
     <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-4 text-white">
         <p class="text-green-100 text-sm">Available for Withdrawal</p>
-        <p class="text-2xl font-bold">৳{{ number_format(auth()->user()->wallet->main_balance ?? 0, 2) }}</p>
+        <p class="text-2xl font-bold">{{ format_currency(auth()->user()->wallet->main_balance ?? 0) }}</p>
     </div>
 
     <!-- Withdrawals List -->
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="font-semibold text-gray-900">৳{{ number_format($withdrawal->amount, 2) }}</p>
+                            <p class="font-semibold text-gray-900">{{ format_currency($withdrawal->amount, 2) }}</p>
                             <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full
                                 @if($withdrawal->status === 'completed') bg-green-100 text-green-700
                                 @elseif($withdrawal->status === 'pending') bg-yellow-100 text-yellow-700

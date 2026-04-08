@@ -21,8 +21,10 @@ class ProfileController extends Controller
             'tasks_completed' => \App\Models\TaskSubmission::where('user_id', $user->id)->where('status', 'approved')->count(),
             'total_referrals' => \App\Models\Referral::where('referrer_id', $user->id)->count()
         ];
+
+        $currencies = \App\Models\Currency::getActive();
         
-        return view('user.profile.index', compact('user', 'stats'));
+        return view('user.profile.index', compact('user', 'stats', 'currencies'));
     }
 
     public function update(Request $request)
@@ -32,6 +34,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'currency_code' => 'nullable|string|size:3|exists:currencies,code',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

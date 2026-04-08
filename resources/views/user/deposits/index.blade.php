@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="font-semibold text-gray-900">৳{{ number_format($deposit->amount, 2) }}</p>
+                            <p class="font-semibold text-gray-900">{{ format_currency($deposit->amount, 2) }}</p>
                             <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full
                                 @if($deposit->status === 'approved') bg-green-100 text-green-700
                                 @elseif($deposit->status === 'pending') bg-yellow-100 text-yellow-700

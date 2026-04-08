@@ -18,6 +18,7 @@ class Admin extends Authenticatable
         'password',
         'phone',
         'role',
+        'currency_code',
         'profile_photo',
         'is_active',
     ];
@@ -77,5 +78,30 @@ class Admin extends Authenticatable
             return asset('storage/' . $this->profile_photo);
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=ef4444&color=fff';
+    }
+
+    /**
+     * Get the admin's currency
+     */
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+    }
+
+    /**
+     * Get the admin's currency object
+     */
+    public function getCurrencyAttribute()
+    {
+        return Currency::getByCode($this->currency_code ?? 'USD') ?? Currency::getDefault();
+    }
+
+    /**
+     * Format amount in admin's currency
+     */
+    public function formatCurrency($amount): string
+    {
+        $currency = $this->getCurrencyAttribute();
+        return $currency ? $currency->format($amount) : '$' . number_format($amount, 2);
     }
 }

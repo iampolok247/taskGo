@@ -26,31 +26,28 @@
             <div class="mb-4">
                 <p class="text-primary-200 text-xs uppercase tracking-wide">💰 Wallet Balance</p>
                 <div class="flex items-baseline gap-2">
-                    <h2 class="text-3xl font-bold">৳{{ number_format($wallet->main_balance ?? 0, 2) }}</h2>
-                    <span class="text-primary-200 text-sm">BDT</span>
+                    <h2 class="text-3xl font-bold">{{ format_currency($wallet->main_balance ?? 0) }}</h2>
+                    <span class="text-primary-200 text-sm">{{ auth()->user()->currency_code ?? 'USD' }}</span>
                 </div>
             </div>
 
-            <!-- Currency Conversion -->
+            <!-- Quick Stats -->
             <div class="bg-white/10 rounded-xl p-3 mb-4 backdrop-blur-sm">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="text-lg">💱</span>
-                        <span class="text-xs text-primary-100">Convert Currency</span>
+                        <span class="text-lg">�</span>
+                        <span class="text-xs text-primary-100">Quick Stats</span>
                     </div>
-                    <a href="{{ route('user.wallet.convert') }}" class="px-3 py-1 bg-white/20 rounded-full text-xs font-medium hover:bg-white/30 transition-all">
-                        Convert →
-                    </a>
                 </div>
                 <div class="flex items-center gap-4 mt-2 text-sm">
                     <div>
-                        <span class="text-primary-200 text-xs">USDT</span>
-                        <p class="font-semibold">${{ number_format(($wallet->main_balance ?? 0) / ($usdtRate ?? 120), 2) }}</p>
+                        <span class="text-primary-200 text-xs">Today's Earnings</span>
+                        <p class="font-semibold">{{ format_currency($todayEarnings ?? 0) }}</p>
                     </div>
                     <div class="w-px h-6 bg-white/20"></div>
                     <div>
                         <span class="text-primary-200 text-xs">Rate</span>
-                        <p class="font-semibold">৳{{ number_format($usdtRate ?? 120, 2) }}</p>
+                        <p class="font-semibold">{{ format_currency($wallet->pending_balance ?? 0) }}</p>
                     </div>
                 </div>
             </div>
@@ -79,7 +76,7 @@
                 </div>
                 <span class="text-xs text-gray-500 font-medium">Daily Earnings</span>
             </div>
-            <p class="text-xl font-bold text-gray-900">৳{{ number_format($todayEarnings ?? 0, 2) }}</p>
+            <p class="text-xl font-bold text-gray-900">{{ format_currency($todayEarnings ?? 0) }}</p>
             <p class="text-xs text-green-600 mt-1">
                 <span class="inline-flex items-center gap-1">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path></svg>
@@ -111,7 +108,7 @@
                 </div>
                 <span class="text-xs text-gray-500 font-medium">Pending</span>
             </div>
-            <p class="text-xl font-bold text-gray-900">৳{{ number_format($wallet->pending_balance ?? 0, 2) }}</p>
+            <p class="text-xl font-bold text-gray-900">{{ format_currency($wallet->pending_balance ?? 0) }}</p>
             <p class="text-xs text-yellow-600 mt-1">{{ $pendingSubmissions ?? 0 }} tasks pending</p>
         </div>
 
@@ -146,7 +143,7 @@
             </button>
         </div>
         <div class="mt-3 pt-3 border-t border-white/20">
-            <p class="text-xs text-purple-200">Share & earn ৳{{ $referralBonus ?? 50 }} for each friend who joins!</p>
+            <p class="text-xs text-purple-200">Share & earn {{ format_currency($referralBonus ?? 50) }} for each friend who joins!</p>
         </div>
     </div>
 
@@ -227,7 +224,7 @@
                             <p class="text-xs text-gray-500">{{ $transaction->created_at->diffForHumans() }}</p>
                         </div>
                         <p class="text-sm font-bold {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                            {{ $transaction->amount > 0 ? '+' : '' }}৳{{ number_format(abs($transaction->amount), 2) }}
+                            {{ $transaction->amount > 0 ? '+' : '' }}{{ format_currency(abs($transaction->amount)) }}
                         </p>
                     </div>
                 @endforeach

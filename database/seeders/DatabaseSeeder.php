@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
 use App\Models\Task;
-
+use App\Models\Currency;
 use App\Models\CurrencyRate;
 
 class DatabaseSeeder extends Seeder
@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed currencies first
+        $this->call(CurrencySeeder::class);
+
         // Create Admin
         Admin::create([
             'name' => 'Super Admin',

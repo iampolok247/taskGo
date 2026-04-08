@@ -16,7 +16,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Total Earned</p>
-                    <p class="text-2xl font-bold text-gray-900">৳{{ number_format($stats['total'], 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ format_currency($stats['total'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,7 +30,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Paid Out</p>
-                    <p class="text-2xl font-bold text-emerald-600">৳{{ number_format($stats['paid'], 2) }}</p>
+                    <p class="text-2xl font-bold text-emerald-600">{{ format_currency($stats['paid'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,7 +44,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Pending</p>
-                    <p class="text-2xl font-bold text-yellow-600">৳{{ number_format($stats['pending'], 2) }}</p>
+                    <p class="text-2xl font-bold text-yellow-600">{{ format_currency($stats['pending'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">This Month</p>
-                    <p class="text-2xl font-bold text-blue-600">৳{{ number_format($stats['this_month'], 2) }}</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ format_currency($stats['this_month'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-semibold text-green-600">+৳{{ number_format($commission->amount, 2) }}</div>
+                                    <div class="text-sm font-semibold text-green-600">+{{ format_currency($commission->amount, 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($commission->status == 'paid')
@@ -164,7 +164,7 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="font-semibold text-green-600">+৳{{ number_format($commission->amount, 2) }}</p>
+                                <p class="font-semibold text-green-600">+{{ format_currency($commission->amount, 2) }}</p>
                                 @if($commission->status == 'paid')
                                     <span class="text-xs text-green-600">Paid</span>
                                 @else

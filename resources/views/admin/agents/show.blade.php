@@ -46,15 +46,15 @@
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Total Earnings</p>
-            <p class="text-xl font-bold text-primary-600">৳{{ number_format($stats['total_earnings'], 2) }}</p>
+            <p class="text-xl font-bold text-primary-600">{{ format_currency($stats['total_earnings'], 2) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Pending</p>
-            <p class="text-xl font-bold text-yellow-600">৳{{ number_format($stats['pending_earnings'], 2) }}</p>
+            <p class="text-xl font-bold text-yellow-600">{{ format_currency($stats['pending_earnings'], 2) }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-gray-500 text-sm">Withdrawn</p>
-            <p class="text-xl font-bold text-blue-600">৳{{ number_format($stats['withdrawn_earnings'], 2) }}</p>
+            <p class="text-xl font-bold text-blue-600">{{ format_currency($stats['withdrawn_earnings'], 2) }}</p>
         </div>
     </div>
 
@@ -110,7 +110,7 @@
                         <p class="font-medium text-sm">{{ $commission->user->name ?? 'User' }}</p>
                         <p class="text-xs text-gray-500">{{ $commission->created_at->format('M d, H:i') }}</p>
                     </div>
-                    <span class="text-green-600 font-medium">+৳{{ number_format($commission->amount, 2) }}</span>
+                    <span class="text-green-600 font-medium">+{{ format_currency($commission->amount, 2) }}</span>
                 </div>
                 @empty
                 <p class="text-gray-500 text-center py-4">No commissions yet</p>

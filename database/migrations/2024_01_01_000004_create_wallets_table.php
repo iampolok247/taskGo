@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('total_deposited', 15, 2)->default(0);
             $table->decimal('total_withdrawn', 15, 2)->default(0);
             $table->decimal('total_earned', 15, 2)->default(0);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->timestamps();
             
             $table->unique('user_id');

@@ -90,7 +90,7 @@
                             <p class="text-sm text-gray-500 capitalize">{{ $submission->task->category ?? '' }}</p>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="font-medium text-green-600">৳{{ number_format($submission->reward_amount ?? 0, 2) }}</span>
+                            <span class="font-medium text-green-600">{{ format_currency($submission->reward_amount ?? 0, 2) }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full {{ $submission->status === 'approved' ? 'bg-green-100 text-green-700' : ($submission->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700') }}">

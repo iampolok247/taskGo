@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('transaction_id')->unique();
             $table->enum('type', ['deposit', 'withdrawal', 'task_earning', 'referral_bonus', 'commission', 'adjustment', 'fee']);
             $table->decimal('amount', 15, 2);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->enum('status', ['pending', 'completed', 'failed', 'cancelled'])->default('completed');
             $table->string('description');
             $table->morphs('transactionable'); // For polymorphic relation

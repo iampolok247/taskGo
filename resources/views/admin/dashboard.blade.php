@@ -54,7 +54,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-yellow-600 mt-2">৳{{ number_format($stats['pending_deposit_amount']) }} pending</p>
+            <p class="text-xs text-yellow-600 mt-2">{{ format_currency($stats['pending_deposit_amount']) }} pending</p>
         </div>
 
         <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-red-500">
@@ -69,7 +69,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-red-600 mt-2">৳{{ number_format($stats['pending_withdrawal_amount']) }} pending</p>
+            <p class="text-xs text-red-600 mt-2">{{ format_currency($stats['pending_withdrawal_amount']) }} pending</p>
         </div>
     </div>
 
@@ -109,7 +109,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Today's Paid Out</p>
-                    <p class="text-2xl font-bold text-gray-900">৳{{ number_format($stats['today_paid']) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ format_currency($stats['today_paid']) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,7 +213,7 @@
                             <p class="text-xs text-gray-500">{{ $deposit->created_at->diffForHumans() }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">৳{{ number_format($deposit->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ format_currency($deposit->amount) }}</p>
                             <span class="text-xs capitalize
                                 @if($deposit->status == 'approved') text-green-600
                                 @elseif($deposit->status == 'pending') text-yellow-600
@@ -264,7 +264,7 @@
                             <p class="text-xs text-gray-500">{{ $withdrawal->created_at->diffForHumans() }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">৳{{ number_format($withdrawal->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ format_currency($withdrawal->amount) }}</p>
                             <span class="text-xs capitalize
                                 @if($withdrawal->status == 'approved') text-green-600
                                 @elseif($withdrawal->status == 'pending') text-yellow-600

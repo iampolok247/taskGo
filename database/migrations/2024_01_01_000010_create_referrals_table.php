@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('referrer_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('referred_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('bonus_amount', 15, 2)->default(0);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->enum('status', ['pending', 'qualified', 'paid'])->default('pending');
             $table->boolean('first_deposit_made')->default(false);
             $table->decimal('first_deposit_amount', 15, 2)->nullable();

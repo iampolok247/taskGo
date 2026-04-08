@@ -16,6 +16,8 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -152,7 +154,7 @@
                 <!-- Wallet Balance -->
                 <div class="mt-4 bg-white/10 rounded-xl p-3">
                     <p class="text-white/70 text-xs">Wallet Balance</p>
-                    <p class="text-2xl font-bold">৳{{ number_format(auth()->user()->wallet->main_balance ?? 0, 2) }}</p>
+                    <p class="text-2xl font-bold">{{ format_currency(auth()->user()->wallet->main_balance ?? 0) }}</p>
                 </div>
             </div>
 

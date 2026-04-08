@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('deposit_amount', 15, 2);
             $table->decimal('commission_rate', 5, 2);
             $table->decimal('commission_amount', 15, 2);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->enum('status', ['pending', 'approved', 'paid', 'rejected'])->default('pending');
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();

@@ -17,7 +17,7 @@
                 <p class="text-sm text-gray-500 mt-1">{{ ucfirst($task->category) }}</p>
             </div>
             <div class="text-right">
-                <p class="text-2xl font-bold text-green-600">৳{{ number_format($task->reward, 2) }}</p>
+                <p class="text-2xl font-bold text-green-600">{{ format_currency($task->reward, 2) }}</p>
                 <p class="text-xs text-gray-500">Reward</p>
             </div>
         </div>
@@ -113,7 +113,7 @@
                     </svg>
                     <div>
                         <p class="font-medium text-green-700">Task Completed!</p>
-                        <p class="text-sm text-green-600">৳{{ number_format($task->reward, 2) }} has been added to your wallet.</p>
+                        <p class="text-sm text-green-600">{{ format_currency($task->reward, 2) }} has been added to your wallet.</p>
                     </div>
                 </div>
             @endif

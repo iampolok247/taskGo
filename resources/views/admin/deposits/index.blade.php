@@ -26,7 +26,7 @@
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-sm text-gray-500">Total Amount</p>
-            <p class="text-2xl font-bold text-blue-600">৳{{ number_format($stats['total_amount']) }}</p>
+            <p class="text-2xl font-bold text-blue-600">{{ format_currency($stats['total_amount']) }}</p>
         </div>
     </div>
 
@@ -83,7 +83,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">৳{{ number_format($deposit->amount, 2) }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ format_currency($deposit->amount) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $deposit->paymentMethod->name ?? 'Unknown' }}

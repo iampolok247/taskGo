@@ -41,15 +41,15 @@
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Min Amount</span>
-                        <span class="font-medium">৳{{ number_format($method->min_amount, 2) }}</span>
+                        <span class="font-medium">{{ format_currency($method->min_amount) }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Max Amount</span>
-                        <span class="font-medium">{{ $method->max_amount ? '৳' . number_format($method->max_amount, 2) : 'Unlimited' }}</span>
+                        <span class="font-medium">{{ $method->max_amount ? format_currency($method->max_amount) : 'Unlimited' }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Fixed Fee</span>
-                        <span class="font-medium">৳{{ number_format($method->fee_fixed, 2) }}</span>
+                        <span class="font-medium">{{ format_currency($method->fee_fixed) }}</span>
                     </div>
                     <div class="flex justify-between py-2">
                         <span class="text-gray-500">Fee %</span>
@@ -127,7 +127,7 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee (৳)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee ({{ currency_symbol() }})</label>
                     <input type="number" name="fee_fixed" value="0" step="0.01" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
                 <div>
@@ -176,7 +176,7 @@
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee (৳)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee ({{ currency_symbol() }})</label>
                     <input type="number" name="fee_fixed" id="editFeeFixed" step="0.01" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
                 </div>
                 <div>

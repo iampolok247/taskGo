@@ -19,6 +19,7 @@ class User extends Authenticatable
         'referred_by',
         'agent_id',
         'status',
+        'currency_code',
         'profile_photo',
         'total_tasks_completed',
         'total_referrals',
@@ -51,7 +52,7 @@ class User extends Authenticatable
 
         static::created(function ($user) {
             $user->wallet()->create([
-                'currency' => 'BDT'
+                'currency' => 'USD'
             ]);
         });
     }
@@ -141,5 +142,30 @@ class User extends Authenticatable
             return asset('storage/' . $this->profile_photo);
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=6366f1&color=fff';
+    }
+
+    /**
+     * Get the user's currency
+     */
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_code', 'code');
+    }
+
+    /**
+     * Get the user's currency object
+     */
+    public function getCurrencyAttribute()
+    {
+        return Currency::getByCode($this->currency_code ?? 'USD') ?? Currency::getDefault();
+    }
+
+    /**
+     * Format amount in user's currency
+     */
+    public function formatCurrency($amount): string
+    {
+        $currency = $this->getCurrencyAttribute();
+        return $currency ? $currency->format($amount) : '$' . number_format($amount, 2);
     }
 }

@@ -15,7 +15,8 @@ class ProfileController extends Controller
     public function index()
     {
         $agent = Auth::guard('agent')->user();
-        return view('agent.profile.index', compact('agent'));
+        $currencies = \App\Models\Currency::getActive();
+        return view('agent.profile.index', compact('agent', 'currencies'));
     }
 
     public function update(Request $request)
@@ -26,6 +27,7 @@ class ProfileController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
+            'currency_code' => 'nullable|string|size:3|exists:currencies,code',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

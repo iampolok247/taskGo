@@ -26,7 +26,7 @@
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
             <p class="text-sm text-gray-500">Total Paid Out</p>
-            <p class="text-2xl font-bold text-blue-600">৳{{ number_format($stats['total_amount']) }}</p>
+            <p class="text-2xl font-bold text-blue-600">{{ format_currency($stats['total_amount']) }}</p>
         </div>
     </div>
 
@@ -78,14 +78,14 @@
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $withdrawal->user->name ?? 'Unknown' }}</div>
-                                            <div class="text-sm text-gray-500">Balance: ৳{{ number_format($withdrawal->user->wallet->main_balance ?? 0, 2) }}</div>
+                                            <div class="text-sm text-gray-500">Balance: {{ format_currency($withdrawal->user->wallet->main_balance ?? 0) }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">৳{{ number_format($withdrawal->amount, 2) }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ format_currency($withdrawal->amount) }}</div>
                                     @if($withdrawal->fee > 0)
-                                        <div class="text-xs text-gray-500">Fee: ৳{{ number_format($withdrawal->fee, 2) }}</div>
+                                        <div class="text-xs text-gray-500">Fee: {{ format_currency($withdrawal->fee) }}</div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

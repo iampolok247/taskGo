@@ -16,6 +16,37 @@
         </div>
     @endif
 
+    <!-- Quick Links -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="{{ route('admin.settings.currencies') }}" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <span class="text-lg">💱</span>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Currencies</p>
+                <p class="text-xs text-gray-500">Manage exchange rates</p>
+            </div>
+        </a>
+        <a href="{{ route('admin.settings.payment-methods') }}" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <span class="text-lg">💳</span>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Payment Methods</p>
+                <p class="text-xs text-gray-500">Configure payment options</p>
+            </div>
+        </a>
+        <a href="{{ route('admin.announcements.index') }}" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-center gap-3">
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <span class="text-lg">📢</span>
+            </div>
+            <div>
+                <p class="font-medium text-gray-900">Announcements</p>
+                <p class="text-xs text-gray-500">Manage notifications</p>
+            </div>
+        </a>
+    </div>
+
     <!-- General Settings -->
     <form action="{{ route('admin.settings.update') }}" method="POST">
         @csrf
@@ -44,9 +75,8 @@
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Currency Symbol</label>
-                    <input type="text" name="currency_symbol" value="{{ $settings['currency_symbol'] ?? '৳' }}"
-                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Currency</label>
+                    <p class="text-sm text-gray-500">Managed in <a href="{{ route('admin.settings.currencies') }}" class="text-primary-600 hover:underline">Currency Settings</a></p>
                 </div>
             </div>
         </div>

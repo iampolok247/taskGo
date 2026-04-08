@@ -60,7 +60,6 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
     // Wallet
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::get('/wallet/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
-    Route::get('/wallet/convert', [WalletController::class, 'convert'])->name('wallet.convert');
 
     // Deposits
     Route::get('/deposits', [UserDepositController::class, 'index'])->name('deposits.index');
@@ -196,8 +195,8 @@ Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->gro
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::get('/settings/currency-rates', [SettingsController::class, 'currencyRates'])->name('settings.currency-rates');
-    Route::put('/settings/currency-rates', [SettingsController::class, 'updateCurrencyRates'])->name('settings.currency-rates.update');
+    Route::get('/settings/currencies', [SettingsController::class, 'currencies'])->name('settings.currencies');
+    Route::put('/settings/currencies/{currency}', [SettingsController::class, 'updateCurrency'])->name('settings.currencies.update');
     Route::get('/settings/payment-methods', [SettingsController::class, 'paymentMethods'])->name('settings.payment-methods');
     Route::post('/settings/payment-methods', [SettingsController::class, 'storePaymentMethod'])->name('settings.payment-methods.store');
     Route::put('/settings/payment-methods/{method}', [SettingsController::class, 'updatePaymentMethod'])->name('settings.payment-methods.update');

@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-500">Current Balance</p>
-                <p class="text-2xl font-bold text-gray-900">৳{{ number_format($wallet->main_balance, 2) }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance, 2) }}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,14 +28,14 @@
             
             <!-- Amount -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Amount (BDT)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount ({{ currency_symbol() }})</label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">৳</span>
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
                     <input type="number" name="amount" value="{{ old('amount') }}" min="100" step="0.01"
                         class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="Enter amount">
                 </div>
-                <p class="text-xs text-gray-500 mt-1">Minimum deposit: ৳100</p>
+                <p class="text-xs text-gray-500 mt-1">Minimum deposit: {{ format_currency(100) }}</p>
                 @error('amount')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -48,7 +48,7 @@
                     @foreach([100, 500, 1000, 2000] as $quickAmount)
                         <button type="button" onclick="setAmount({{ $quickAmount }})" 
                             class="py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
-                            ৳{{ number_format($quickAmount) }}
+                            {{ format_currency($quickAmount) }}
                         </button>
                     @endforeach
                 </div>
@@ -70,7 +70,7 @@
                                 <p class="font-medium text-gray-900">{{ $method->name }}</p>
                                 <p class="text-sm text-gray-500">{{ $method->account_number }}</p>
                                 @if($method->min_amount || $method->max_amount)
-                                    <p class="text-xs text-gray-400">Min: ৳{{ number_format($method->min_amount ?? 0) }} | Max: ৳{{ number_format($method->max_amount ?? 999999) }}</p>
+                                    <p class="text-xs text-gray-400">Min: {{ format_currency($method->min_amount ?? 0) }} | Max: {{ format_currency($method->max_amount ?? 999999) }}</p>
                                 @endif
                             </div>
                             @if($method->icon)
@@ -175,7 +175,7 @@
                             <p class="text-xs text-gray-500">{{ $deposit->created_at->format('M d, Y h:i A') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">৳{{ number_format($deposit->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ format_currency($deposit->amount, 2) }}</p>
                             <span class="text-xs px-2 py-0.5 rounded-full
                                 @if($deposit->status == 'approved') bg-green-100 text-green-700
                                 @elseif($deposit->status == 'pending') bg-yellow-100 text-yellow-700

@@ -93,7 +93,7 @@
                                     <div class="text-sm text-gray-500">{{ $user->phone ?? 'N/A' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-green-600">৳{{ number_format($user->wallet->total_earned ?? 0, 2) }}</div>
+                                    <div class="text-sm font-medium text-green-600">{{ format_currency($user->wallet->total_earned ?? 0, 2) }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900">{{ $user->taskSubmissions->where('status', 'approved')->count() }}</div>
@@ -138,7 +138,7 @@
                         <div class="grid grid-cols-2 gap-2 text-sm">
                             <div>
                                 <span class="text-gray-500">Earnings:</span>
-                                <span class="font-medium text-green-600">৳{{ number_format($user->wallet->total_earned ?? 0, 2) }}</span>
+                                <span class="font-medium text-green-600">{{ format_currency($user->wallet->total_earned ?? 0, 2) }}</span>
                             </div>
                             <div>
                                 <span class="text-gray-500">Tasks:</span>

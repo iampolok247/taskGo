@@ -26,7 +26,7 @@
                         </div>
 
                         <div class="mt-3 text-sm text-gray-700">
-                            <strong>Reward:</strong> ৳{{ number_format($submission->reward_amount ?? 0, 2) }}
+                            <strong>Reward:</strong> {{ format_currency($submission->reward_amount ?? 0, 2) }}
                         </div>
 
                         @if($submission->status === 'rejected' && $submission->rejection_reason)

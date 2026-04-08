@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Currency;
 use App\Models\CurrencyRate;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
@@ -34,41 +35,30 @@ class SettingsController extends Controller
         return back()->with('success', 'Settings updated successfully!');
     }
 
-    public function currencyRates()
+    public function currencies()
     {
-        $rates = CurrencyRate::all();
+        $currencies = Currency::orderBy('name')->get();
         
-        return view('admin.settings.currency-rates', compact('rates'));
+        return view('admin.settings.currencies', compact('currencies'));
     }
 
-    public function updateCurrencyRates(Request $request)
+    public function updateCurrency(Request $request, Currency $currency)
     {
         $validated = $request->validate([
-            'rates' => 'required|array',
-            'rates.*.from_currency' => 'required|string|max:10',
-            'rates.*.to_currency' => 'required|string|max:10',
-            'rates.*.rate' => 'required|numeric|min:0',
-            'rates.*.fee_percentage' => 'required|numeric|min:0|max:100',
-            'rates.*.is_active' => 'boolean',
+            'exchange_rate' => 'required|numeric|min:0',
+            'is_active' => 'boolean',
+            'is_default' => 'boolean',
         ]);
 
-        foreach ($validated['rates'] as $rateData) {
-            CurrencyRate::updateOrCreate(
-                [
-                    'from_currency' => $rateData['from_currency'],
-                    'to_currency' => $rateData['to_currency'],
-                ],
-                [
-                    'rate' => $rateData['rate'],
-                    'fee_percentage' => $rateData['fee_percentage'],
-                    'is_active' => $rateData['is_active'] ?? true,
-                ]
-            );
+        // If setting as default, unset other defaults
+        if ($request->boolean('is_default')) {
+            Currency::where('id', '!=', $currency->id)->update(['is_default' => false]);
         }
 
-        CurrencyRate::clearCache();
+        $currency->update($validated);
+        Currency::clearCache();
 
-        return back()->with('success', 'Currency rates updated successfully!');
+        return back()->with('success', 'Currency updated successfully!');
     }
 
     public function paymentMethods()

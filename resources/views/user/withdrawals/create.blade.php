@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-500">Available for Withdrawal</p>
-                <p class="text-2xl font-bold text-gray-900">৳{{ number_format($wallet->main_balance, 2) }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance) }}</p>
             </div>
             <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,7 +17,7 @@
                 </svg>
             </div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">Minimum withdrawal: ৳{{ $minWithdrawal }} | Maximum: ৳{{ $maxWithdrawal }}</p>
+        <p class="text-xs text-gray-500 mt-2">Minimum withdrawal: {{ format_currency($minWithdrawal) }} | Maximum: {{ format_currency($maxWithdrawal) }}</p>
     </div>
 
     <!-- Withdrawal Form -->
@@ -29,9 +29,9 @@
             
             <!-- Amount -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Amount (BDT)</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount ({{ currency_symbol() }})</label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">৳</span>
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
                     <input type="number" name="amount" value="{{ old('amount') }}" min="{{ $minWithdrawal }}" max="{{ $maxWithdrawal }}" step="0.01"
                         class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="Enter amount">
@@ -49,12 +49,12 @@
                         @if($quickAmount <= $wallet->main_balance)
                             <button type="button" onclick="setAmount({{ $quickAmount }})" 
                                 class="py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
-                                ৳{{ number_format($quickAmount) }}
+                                {{ format_currency($quickAmount, null, 0) }}
                             </button>
                         @else
                             <button type="button" disabled
                                 class="py-2 border border-gray-100 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed">
-                                ৳{{ number_format($quickAmount) }}
+                                {{ format_currency($quickAmount, null, 0) }}
                             </button>
                         @endif
                     @endforeach
@@ -64,7 +64,7 @@
             <!-- Withdraw All -->
             <button type="button" onclick="setAmount({{ $wallet->main_balance }})" 
                 class="w-full py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-all">
-                Withdraw All (৳{{ number_format($wallet->main_balance, 2) }})
+                Withdraw All ({{ format_currency($wallet->main_balance) }})
             </button>
             
             <!-- Payment Method -->
@@ -116,16 +116,16 @@
             <div class="bg-gray-50 rounded-xl p-4">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm text-gray-600">Withdrawal Amount</span>
-                    <span class="text-sm font-medium text-gray-900" id="withdrawal-amount">৳0.00</span>
+                    <span class="text-sm font-medium text-gray-900" id="withdrawal-amount">{{ currency_symbol() }}0.00</span>
                 </div>
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-sm text-gray-600">Processing Fee</span>
-                    <span class="text-sm font-medium text-gray-900" id="processing-fee">৳0.00</span>
+                    <span class="text-sm font-medium text-gray-900" id="processing-fee">{{ currency_symbol() }}0.00</span>
                 </div>
                 <div class="border-t border-gray-200 my-2"></div>
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-semibold text-gray-900">You Will Receive</span>
-                    <span class="text-lg font-bold text-green-600" id="receive-amount">৳0.00</span>
+                    <span class="text-lg font-bold text-green-600" id="receive-amount">{{ currency_symbol() }}0.00</span>
                 </div>
             </div>
             
@@ -141,8 +141,8 @@
         <ul class="text-sm text-yellow-700 space-y-1">
             <li>• Withdrawals are processed within 24-48 hours</li>
             <li>• Make sure your account details are correct</li>
-            <li>• Minimum withdrawal amount is ৳{{ $minWithdrawal }}</li>
-            <li>• Maximum withdrawal amount is ৳{{ $maxWithdrawal }}</li>
+            <li>• Minimum withdrawal amount is {{ format_currency($minWithdrawal) }}</li>
+            <li>• Maximum withdrawal amount is {{ format_currency($maxWithdrawal) }}</li>
         </ul>
     </div>
 
@@ -176,7 +176,7 @@
                             <p class="text-xs text-gray-500">{{ $withdrawal->created_at->format('M d, Y h:i A') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">৳{{ number_format($withdrawal->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ format_currency($withdrawal->amount) }}</p>
                             <span class="text-xs px-2 py-0.5 rounded-full
                                 @if($withdrawal->status == 'approved') bg-green-100 text-green-700
                                 @elseif($withdrawal->status == 'pending') bg-yellow-100 text-yellow-700
@@ -193,6 +193,7 @@
 
 <script>
 const feePercent = {{ $withdrawalFee ?? 0 }};
+const currencySymbol = '{{ currency_symbol() }}';
 
 function setAmount(amount) {
     document.querySelector('input[name="amount"]').value = amount;
@@ -208,9 +209,9 @@ function updateSummary(amount) {
     const fee = (amount * feePercent / 100);
     const receive = amount - fee;
     
-    document.getElementById('withdrawal-amount').textContent = '৳' + amount.toFixed(2);
-    document.getElementById('processing-fee').textContent = '৳' + fee.toFixed(2);
-    document.getElementById('receive-amount').textContent = '৳' + receive.toFixed(2);
+    document.getElementById('withdrawal-amount').textContent = currencySymbol + amount.toFixed(2);
+    document.getElementById('processing-fee').textContent = currencySymbol + fee.toFixed(2);
+    document.getElementById('receive-amount').textContent = currencySymbol + receive.toFixed(2);
 }
 </script>
 @endsection

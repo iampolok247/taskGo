@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 15, 2);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->decimal('fee', 15, 2)->default(0);
             $table->decimal('final_amount', 15, 2);
             $table->enum('method', ['usdt', 'bank', 'bkash', 'nagad', 'rocket', 'other']);

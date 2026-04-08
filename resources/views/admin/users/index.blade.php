@@ -103,7 +103,7 @@
                                     {{ $user->agent->name ?? 'Direct' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-green-600">৳{{ number_format($user->wallet->main_balance ?? 0, 2) }}</div>
+                                    <div class="text-sm font-medium text-green-600">{{ format_currency($user->wallet->main_balance ?? 0, 2) }}</div>
                                     <div class="text-xs text-gray-500">{{ $user->taskSubmissions->where('status', 'approved')->count() }} tasks</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

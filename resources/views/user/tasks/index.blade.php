@@ -13,7 +13,7 @@
             </div>
             <div class="text-right">
                 <p class="text-sm text-gray-500">Today's Earnings</p>
-                <p class="text-xl font-bold text-green-600">৳{{ number_format($todayEarnings, 2) }}</p>
+                <p class="text-xl font-bold text-green-600">{{ format_currency($todayEarnings, 2) }}</p>
             </div>
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2">
@@ -59,7 +59,7 @@
                                 <p class="text-sm text-gray-500 mt-1">{{ Str::limit($task->description, 80) }}</p>
                             </div>
                             <div class="ml-3 text-right">
-                                <p class="text-lg font-bold text-green-600">৳{{ number_format($task->reward, 2) }}</p>
+                                <p class="text-lg font-bold text-green-600">{{ format_currency($task->reward, 2) }}</p>
                             </div>
                         </div>
                         

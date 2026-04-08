@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('max_amount', 15, 2)->nullable();
             $table->decimal('fee_fixed', 15, 2)->default(0);
             $table->decimal('fee_percentage', 5, 2)->default(0);
-            $table->string('currency', 10)->default('BDT');
+            $table->string('currency', 10)->default('USD');
             $table->json('account_details')->nullable(); // Admin account details
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);

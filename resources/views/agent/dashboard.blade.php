@@ -31,7 +31,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Total Commission</p>
-                    <p class="text-2xl font-bold text-gray-900">৳{{ number_format($stats['total_commission'], 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ format_currency($stats['total_commission'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,14 +39,14 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 mt-2">৳{{ number_format($stats['pending_commission'], 2) }} pending</p>
+            <p class="text-xs text-gray-500 mt-2">{{ format_currency($stats['pending_commission'], 2) }} pending</p>
         </div>
 
         <div class="bg-white rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-gray-500">This Month</p>
-                    <p class="text-2xl font-bold text-gray-900">৳{{ number_format($stats['month_commission'], 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">{{ format_currency($stats['month_commission'], 2) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@
                             <p class="text-xs text-gray-500">{{ ucfirst($commission->type) }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-green-600">+৳{{ number_format($commission->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-green-600">+{{ format_currency($commission->amount, 2) }}</p>
                             <span class="text-xs px-2 py-0.5 rounded-full
                                 @if($commission->status == 'paid') bg-green-100 text-green-700
                                 @else bg-yellow-100 text-yellow-700 @endif">

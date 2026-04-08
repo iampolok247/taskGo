@@ -123,7 +123,7 @@
                         </svg>
                         <div>
                             <p class="font-medium text-green-800">Approved</p>
-                            <p class="text-sm text-green-700">Reward of ৳{{ number_format($submission->reward_amount, 2) }} was credited to user's wallet.</p>
+                            <p class="text-sm text-green-700">Reward of {{ format_currency($submission->reward_amount, 2) }} was credited to user's wallet.</p>
                         </div>
                         @else
                         <svg class="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@
                 <div class="space-y-3">
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Reward</span>
-                        <span class="font-medium text-green-600">৳{{ number_format($submission->reward_amount, 2) }}</span>
+                        <span class="font-medium text-green-600">{{ format_currency($submission->reward_amount, 2) }}</span>
                     </div>
                     <div class="flex justify-between py-2 border-b">
                         <span class="text-gray-500">Proof Type</span>
