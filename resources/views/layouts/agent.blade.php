@@ -40,25 +40,31 @@
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 safe-area-bottom">
         <div class="flex items-center justify-around py-2">
-            <a href="{{ route('agent.dashboard') }}" class="nav-item flex flex-col items-center py-1 px-4 {{ request()->routeIs('agent.dashboard') ? 'text-emerald-600' : 'text-gray-500' }}">
+            <a href="{{ route('agent.dashboard') }}" class="nav-item flex flex-col items-center py-1 px-2 {{ request()->routeIs('agent.dashboard') ? 'text-emerald-600' : 'text-gray-500' }}">
                 <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
-                <span class="text-[10px] font-medium mt-1">Dashboard</span>
+                <span class="text-[10px] font-medium mt-1">Home</span>
             </a>
-            <a href="{{ route('agent.users.index') }}" class="nav-item flex flex-col items-center py-1 px-4 {{ request()->routeIs('agent.users.*') ? 'text-emerald-600' : 'text-gray-500' }}">
+            <a href="{{ route('agent.deposits.index') }}" class="nav-item flex flex-col items-center py-1 px-2 {{ request()->routeIs('agent.deposits.*') ? 'text-emerald-600' : 'text-gray-500' }}">
+                <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span class="text-[10px] font-medium mt-1">Deposit</span>
+            </a>
+            <a href="{{ route('agent.withdrawals.index') }}" class="nav-item flex flex-col items-center py-1 px-2 {{ request()->routeIs('agent.withdrawals.*') ? 'text-emerald-600' : 'text-gray-500' }}">
+                <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+                <span class="text-[10px] font-medium mt-1">Withdraw</span>
+            </a>
+            <a href="{{ route('agent.users.index') }}" class="nav-item flex flex-col items-center py-1 px-2 {{ request()->routeIs('agent.users.*') ? 'text-emerald-600' : 'text-gray-500' }}">
                 <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
                 <span class="text-[10px] font-medium mt-1">Users</span>
             </a>
-            <a href="{{ route('agent.commissions.index') }}" class="nav-item flex flex-col items-center py-1 px-4 {{ request()->routeIs('agent.commissions.*') ? 'text-emerald-600' : 'text-gray-500' }}">
-                <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="text-[10px] font-medium mt-1">Earnings</span>
-            </a>
-            <a href="{{ route('agent.profile.index') }}" class="nav-item flex flex-col items-center py-1 px-4 {{ request()->routeIs('agent.profile.*') ? 'text-emerald-600' : 'text-gray-500' }}">
+            <a href="{{ route('agent.profile.index') }}" class="nav-item flex flex-col items-center py-1 px-2 {{ request()->routeIs('agent.profile.*') ? 'text-emerald-600' : 'text-gray-500' }}">
                 <svg class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
