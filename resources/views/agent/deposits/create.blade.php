@@ -60,14 +60,21 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
                 <div class="space-y-2">
                     @forelse($paymentMethods as $method)
+                        @php
+                            $details = $method->account_details ?? [];
+                            $displayAccount = $details['account_number'] ?? $details['number'] ?? $details['wallet_address'] ?? $details['address'] ?? $details['account_info'] ?? $details['account'] ?? '';
+                        @endphp
                         <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all payment-method-option">
                             <input type="radio" name="method" value="{{ $method->code }}" 
                                 class="w-4 h-4 text-emerald-500 focus:ring-emerald-500"
-                                data-account="{{ $method->account_number }}"
+                                data-details='@json($details)'
+                                data-name="{{ $method->name }}"
                                 {{ old('method') == $method->code ? 'checked' : '' }}>
                             <div class="flex-1">
                                 <p class="font-medium text-gray-900">{{ $method->name }}</p>
-                                <p class="text-sm text-gray-500">{{ $method->account_number }}</p>
+                                @if($displayAccount)
+                                    <p class="text-sm text-gray-500">{{ $displayAccount }}</p>
+                                @endif
                             </div>
                         </label>
                     @empty
@@ -83,8 +90,8 @@
 
             <!-- Selected Account Info -->
             <div id="account-info" class="hidden p-4 bg-emerald-50 rounded-xl">
-                <p class="text-sm font-medium text-emerald-800 mb-1">Send payment to:</p>
-                <p class="text-lg font-bold text-emerald-900" id="selected-account"></p>
+                <p class="text-sm font-medium text-emerald-800 mb-2">Send payment to:</p>
+                <div id="account-details-box"></div>
             </div>
 
             <!-- Sender Account -->
@@ -143,33 +150,72 @@ function setAmount(amount) {
     document.querySelector('input[name="amount"]').value = amount;
 }
 
-document.querySelectorAll('input[name="method"]').forEach(radio => {
-    radio.addEventListener('change', function() {
-        const accountInfo = document.getElementById('account-info');
-        const selectedAccount = document.getElementById('selected-account');
-        if (this.dataset.account) {
-            selectedAccount.textContent = this.dataset.account;
-            accountInfo.classList.remove('hidden');
+function showAccountDetails(radio) {
+    var box = document.getElementById('account-details-box');
+    var wrapper = document.getElementById('account-info');
+    
+    try {
+        var d = JSON.parse(radio.dataset.details || '{}');
+        var html = '';
+        var cat = d.category || '';
+
+        if (cat === 'mobile_wallet') {
+            if (d.account_type) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Type:</span> ' + d.account_type + '</p>';
+            if (d.account_number) html += '<p class="text-lg font-bold text-emerald-900 my-1">' + d.account_number + '</p>';
+            if (d.account_name) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
+        } else if (cat === 'bank') {
+            if (d.bank_name) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
+            if (d.branch_name || d.branch) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Branch:</span> ' + (d.branch_name || d.branch) + '</p>';
+            if (d.account_name) html += '<p class="text-sm text-emerald-700"><span class="font-medium">A/C Name:</span> ' + d.account_name + '</p>';
+            if (d.account_number) html += '<p class="text-lg font-bold text-emerald-900 my-1">' + d.account_number + '</p>';
+            if (d.routing_number || d.routing) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Routing:</span> ' + (d.routing_number || d.routing) + '</p>';
+            if (d.swift_code) html += '<p class="text-sm text-emerald-700"><span class="font-medium">SWIFT:</span> ' + d.swift_code + '</p>';
+        } else if (cat === 'crypto') {
+            if (d.network) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
+            if (d.wallet_address || d.address) html += '<p class="text-sm font-bold text-emerald-900 my-1 break-all">' + (d.wallet_address || d.address) + '</p>';
+        } else {
+            var mainVal = d.account_number || d.number || d.wallet_address || d.address || d.account_info || d.account || '';
+            if (mainVal) html += '<p class="text-lg font-bold text-emerald-900 my-1">' + mainVal + '</p>';
+            if (d.type) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Type:</span> ' + d.type + '</p>';
+            if (d.account_name) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
+            if (d.bank_name) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
+            if (d.network) html += '<p class="text-sm text-emerald-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
         }
-    });
+
+        if (html) {
+            box.innerHTML = html;
+            wrapper.classList.remove('hidden');
+        } else {
+            wrapper.classList.add('hidden');
+        }
+    } catch(e) {
+        wrapper.classList.add('hidden');
+    }
+}
+
+document.querySelectorAll('input[name="method"]').forEach(function(radio) {
+    radio.addEventListener('change', function() { showAccountDetails(this); });
 });
 
-const dropzone = document.getElementById('dropzone');
-const fileInput = document.getElementById('proof_image');
-const previewContainer = document.getElementById('preview-container');
-const previewImage = document.getElementById('preview-image');
-const uploadPrompt = document.getElementById('upload-prompt');
+var checked = document.querySelector('input[name="method"]:checked');
+if (checked) showAccountDetails(checked);
 
-dropzone.addEventListener('click', () => fileInput.click());
+var dropzone = document.getElementById('dropzone');
+var fileInput = document.getElementById('proof_image');
+var previewContainer = document.getElementById('preview-container');
+var previewImage = document.getElementById('preview-image');
+var uploadPrompt = document.getElementById('upload-prompt');
+
+dropzone.addEventListener('click', function() { fileInput.click(); });
 
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewImage.src = e.target.result;
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            previewImage.src = ev.target.result;
             previewContainer.classList.remove('hidden');
             uploadPrompt.classList.add('hidden');
-        }
+        };
         reader.readAsDataURL(e.target.files[0]);
     }
 });
