@@ -11,6 +11,7 @@ class Withdrawal extends Model
 
     protected $fillable = [
         'user_id',
+        'agent_id',
         'amount',
         'currency',
         'fee',
