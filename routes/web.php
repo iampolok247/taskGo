@@ -14,6 +14,8 @@ use App\Http\Controllers\Agent\DashboardController as AgentDashboardController;
 use App\Http\Controllers\Agent\UserController as AgentUserController;
 use App\Http\Controllers\Agent\CommissionController;
 use App\Http\Controllers\Agent\ProfileController as AgentProfileController;
+use App\Http\Controllers\Agent\DepositController as AgentDepositController;
+use App\Http\Controllers\Agent\WithdrawalController as AgentWithdrawalController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AgentController;
@@ -125,6 +127,18 @@ Route::middleware(['auth:agent', 'agent'])->prefix('agent')->name('agent.')->gro
 
     // Commissions
     Route::get('/commissions', [CommissionController::class, 'index'])->name('commissions.index');
+
+    // Deposits
+    Route::get('/deposits', [AgentDepositController::class, 'index'])->name('deposits.index');
+    Route::get('/deposits/create', [AgentDepositController::class, 'create'])->name('deposits.create');
+    Route::post('/deposits', [AgentDepositController::class, 'store'])->name('deposits.store');
+    Route::get('/deposits/{deposit}', [AgentDepositController::class, 'show'])->name('deposits.show');
+
+    // Withdrawals
+    Route::get('/withdrawals', [AgentWithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::get('/withdrawals/create', [AgentWithdrawalController::class, 'create'])->name('withdrawals.create');
+    Route::post('/withdrawals', [AgentWithdrawalController::class, 'store'])->name('withdrawals.store');
+    Route::get('/withdrawals/{withdrawal}', [AgentWithdrawalController::class, 'show'])->name('withdrawals.show');
 
     // Profile
     Route::get('/profile', [AgentProfileController::class, 'index'])->name('profile.index');
