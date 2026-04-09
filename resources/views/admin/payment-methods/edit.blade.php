@@ -1,159 +1,207 @@
-@extends('layouts.admin')
+@extends('admin.layouts.app')
+
 @section('title', 'Edit Payment Method')
+
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="flex items-center mb-6">
-        <a href="{{ route('admin.payment-methods.index') }}" class="mr-4 p-2 hover:bg-gray-100 rounded-lg">
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+@php
+    $accountDetails = $paymentMethod->account_details ?? [];
+    
+    // Smart category detection: new data has 'category' key, old data doesn't
+    if (isset($accountDetails['category'])) {
+        $category = $accountDetails['category'];
+    } elseif (isset($accountDetails['number']) || isset($accountDetails['type'])) {
+        $category = 'mobile_wallet';
+    } elseif (isset($accountDetails['address']) || isset($accountDetails['wallet_address'])) {
+        $category = 'crypto';
+    } elseif (isset($accountDetails['bank_name'])) {
+        $category = 'bank';
+    } else {
+        $category = 'other';
+    }
+    
+    // Fallback values for both old and new key formats
+    $accountNumber  = $accountDetails['account_number'] ?? $accountDetails['number'] ?? '';
+    $accountType    = $accountDetails['account_type'] ?? $accountDetails['type'] ?? '';
+    $accountName    = $accountDetails['account_name'] ?? '';
+    $bankName       = $accountDetails['bank_name'] ?? '';
+    $branchName     = $accountDetails['branch_name'] ?? $accountDetails['branch'] ?? '';
+    $routingNumber  = $accountDetails['routing_number'] ?? $accountDetails['routing'] ?? '';
+    $swiftCode      = $accountDetails['swift_code'] ?? '';
+    $walletAddress  = $accountDetails['wallet_address'] ?? $accountDetails['address'] ?? '';
+    $network        = $accountDetails['network'] ?? '';
+    $accountInfo    = $accountDetails['account_info'] ?? '';
+@endphp
+
+<div class="max-w-2xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Edit Payment Method</h2>
+        <a href="{{ route('admin.payment-methods.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+            ← Back
         </a>
-        <div><h1 class="text-2xl font-bold text-gray-800">Edit {{ $paymentMethod->name }}</h1></div>
     </div>
 
-    @php
-        $accountDetails = $paymentMethod->account_details ?? [];
-        $category = $accountDetails['category'] ?? 'other';
-    @endphp
+    @if($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <form action="{{ route('admin.payment-methods.update', $paymentMethod) }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
-        @csrf @method('PUT')
-        
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Basic Information</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Method Name *</label>
-                    <input type="text" name="name" value="{{ old('name', $paymentMethod->name) }}" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Method Type *</label>
-                    <select name="type" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="both" {{ $paymentMethod->type == 'both' ? 'selected' : '' }}>Both</option>
-                        <option value="deposit" {{ $paymentMethod->type == 'deposit' ? 'selected' : '' }}>Deposit Only</option>
-                        <option value="withdrawal" {{ $paymentMethod->type == 'withdrawal' ? 'selected' : '' }}>Withdrawal Only</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
-                    <select name="category" id="category" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="mobile_wallet" {{ $category == 'mobile_wallet' ? 'selected' : '' }}>Mobile Wallet</option>
-                        <option value="bank" {{ $category == 'bank' ? 'selected' : '' }}>Bank Transfer</option>
-                        <option value="crypto" {{ $category == 'crypto' ? 'selected' : '' }}>Cryptocurrency</option>
-                        <option value="other" {{ $category == 'other' ? 'selected' : '' }}>Other</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Currency *</label>
-                    <select name="currency" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="BDT" {{ $paymentMethod->currency == 'BDT' ? 'selected' : '' }}>BDT</option>
-                        <option value="USD" {{ $paymentMethod->currency == 'USD' ? 'selected' : '' }}>USD</option>
-                        <option value="USDT" {{ $paymentMethod->currency == 'USDT' ? 'selected' : '' }}>USDT</option>
-                    </select>
-                </div>
-                @if($paymentMethod->icon)
-                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Current Icon</label><img src="{{ asset('storage/' . $paymentMethod->icon) }}" class="w-20 h-20 rounded-lg object-cover"></div>
-                @endif
-                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Change Icon</label><input type="file" name="icon" accept="image/*" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+    <form action="{{ route('admin.payment-methods.update', $paymentMethod) }}" method="POST" class="bg-white rounded-xl shadow p-6 space-y-4">
+        @csrf
+        @method('PUT')
+
+        {{-- Method Name --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Method Name</label>
+            <input type="text" name="name" value="{{ old('name', $paymentMethod->name) }}" class="w-full border rounded-lg px-3 py-2" required>
+        </div>
+
+        {{-- Method Code --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Code</label>
+            <input type="text" name="code" value="{{ old('code', $paymentMethod->code) }}" class="w-full border rounded-lg px-3 py-2" required>
+        </div>
+
+        {{-- Category --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select name="category" id="category" class="w-full border rounded-lg px-3 py-2" required onchange="toggleFields()">
+                <option value="mobile_wallet" {{ $category == 'mobile_wallet' ? 'selected' : '' }}>Mobile Wallet</option>
+                <option value="bank" {{ $category == 'bank' ? 'selected' : '' }}>Bank Transfer</option>
+                <option value="crypto" {{ $category == 'crypto' ? 'selected' : '' }}>Cryptocurrency</option>
+                <option value="other" {{ $category == 'other' ? 'selected' : '' }}>Other</option>
+            </select>
+        </div>
+
+        {{-- Mobile Wallet Fields --}}
+        <div id="mobile_wallet_fields" class="space-y-4" style="display: none;">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+                <select name="account_type" class="w-full border rounded-lg px-3 py-2">
+                    <option value="Personal" {{ strtolower($accountType) == 'personal' ? 'selected' : '' }}>Personal</option>
+                    <option value="Agent" {{ strtolower($accountType) == 'agent' ? 'selected' : '' }}>Agent</option>
+                    <option value="Merchant" {{ strtolower($accountType) == 'merchant' ? 'selected' : '' }}>Merchant</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                <input type="text" name="account_number" value="{{ old('account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2" placeholder="e.g. 01XXXXXXXXX">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Name (Optional)</label>
+                <input type="text" name="account_name" value="{{ old('account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2" placeholder="Account holder name">
             </div>
         </div>
 
-        <!-- Mobile Wallet -->
-        <div id="mobile_wallet_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 {{ $category != 'mobile_wallet' ? 'hidden' : '' }}">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Mobile Wallet Account</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-                    <select name="account_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="Personal" {{ ($accountDetails['account_type'] ?? '') == 'Personal' ? 'selected' : '' }}>Personal</option>
-                        <option value="Agent" {{ ($accountDetails['account_type'] ?? '') == 'Agent' ? 'selected' : '' }}>Agent</option>
-                        <option value="Merchant" {{ ($accountDetails['account_type'] ?? '') == 'Merchant' ? 'selected' : '' }}>Merchant</option>
-                    </select>
-                </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label><input type="text" name="account_number" value="{{ $accountDetails['account_number'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label><input type="text" name="account_name" value="{{ $accountDetails['account_name'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+        {{-- Bank Fields --}}
+        <div id="bank_fields" class="space-y-4" style="display: none;">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                <input type="text" name="bank_name" value="{{ old('bank_name', $bankName) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Branch Name</label>
+                <input type="text" name="branch_name" value="{{ old('branch_name', $branchName) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
+                <input type="text" name="account_name" value="{{ old('account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                <input type="text" name="account_number" value="{{ old('account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Routing Number</label>
+                <input type="text" name="routing_number" value="{{ old('routing_number', $routingNumber) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">SWIFT Code</label>
+                <input type="text" name="swift_code" value="{{ old('swift_code', $swiftCode) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
         </div>
 
-        <!-- Bank -->
-        <div id="bank_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 {{ $category != 'bank' ? 'hidden' : '' }}">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Bank Account</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Bank Name</label><input type="text" name="bank_name" value="{{ $accountDetails['bank_name'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Branch Name</label><input type="text" name="branch_name" value="{{ $accountDetails['branch_name'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label><input type="text" name="account_name" value="{{ $accountDetails['account_name'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label><input type="text" name="account_number" value="{{ $accountDetails['account_number'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Routing Number</label><input type="text" name="routing_number" value="{{ $accountDetails['routing_number'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">SWIFT Code</label><input type="text" name="swift_code" value="{{ $accountDetails['swift_code'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+        {{-- Crypto Fields --}}
+        <div id="crypto_fields" class="space-y-4" style="display: none;">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Network</label>
+                <input type="text" name="network" value="{{ old('network', $network) }}" class="w-full border rounded-lg px-3 py-2" placeholder="e.g. TRC20, ERC20, BEP20">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Wallet Address</label>
+                <input type="text" name="wallet_address" value="{{ old('wallet_address', $walletAddress) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
         </div>
 
-        <!-- Crypto -->
-        <div id="crypto_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 {{ $category != 'crypto' ? 'hidden' : '' }}">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Crypto Wallet</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Network</label>
-                    <select name="network" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="TRC20" {{ ($accountDetails['network'] ?? '') == 'TRC20' ? 'selected' : '' }}>TRC20</option>
-                        <option value="ERC20" {{ ($accountDetails['network'] ?? '') == 'ERC20' ? 'selected' : '' }}>ERC20</option>
-                        <option value="BEP20" {{ ($accountDetails['network'] ?? '') == 'BEP20' ? 'selected' : '' }}>BEP20</option>
-                        <option value="Bitcoin" {{ ($accountDetails['network'] ?? '') == 'Bitcoin' ? 'selected' : '' }}>Bitcoin</option>
-                    </select>
-                </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Wallet Address</label><input type="text" name="wallet_address" value="{{ $accountDetails['wallet_address'] ?? '' }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+        {{-- Other Fields --}}
+        <div id="other_fields" class="space-y-4" style="display: none;">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Account Info</label>
+                <textarea name="account_info" class="w-full border rounded-lg px-3 py-2" rows="3">{{ old('account_info', $accountInfo) }}</textarea>
             </div>
         </div>
 
-        <!-- Other -->
-        <div id="other_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 {{ $category != 'other' ? 'hidden' : '' }}">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Account Info</h2>
-            <textarea name="account_info" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">{{ $accountDetails['account_info'] ?? '' }}</textarea>
+        {{-- Currency --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+            <input type="text" name="currency" value="{{ old('currency', $paymentMethod->currency) }}" class="w-full border rounded-lg px-3 py-2" required>
         </div>
 
-        <!-- Limits & Fees -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Limits & Fees</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Min Amount *</label><input type="number" name="min_amount" value="{{ $paymentMethod->min_amount }}" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Max Amount</label><input type="number" name="max_amount" value="{{ $paymentMethod->max_amount }}" step="0.01" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee</label><input type="number" name="fee_fixed" value="{{ $paymentMethod->fee_fixed }}" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Percentage Fee (%)</label><input type="number" name="fee_percentage" value="{{ $paymentMethod->fee_percentage }}" step="0.01" max="100" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+        {{-- Min / Max --}}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Min Amount</label>
+                <input type="number" step="0.01" name="min_amount" value="{{ old('min_amount', $paymentMethod->min_amount) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Max Amount</label>
+                <input type="number" step="0.01" name="max_amount" value="{{ old('max_amount', $paymentMethod->max_amount) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
         </div>
 
-        <!-- Instructions -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Instructions</h2>
-            <textarea name="instructions" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">{{ $paymentMethod->instructions }}</textarea>
-        </div>
-
-        <!-- Settings -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label><input type="number" name="sort_order" value="{{ $paymentMethod->sort_order }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div class="flex items-center pt-8">
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="is_active" class="sr-only peer" {{ $paymentMethod->is_active ? 'checked' : '' }}>
-                        <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
-                        <span class="ml-3 text-sm font-medium text-gray-700">Active</span>
-                    </label>
-                </div>
+        {{-- Fees --}}
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Fixed Fee</label>
+                <input type="number" step="0.01" name="fee_fixed" value="{{ old('fee_fixed', $paymentMethod->fee_fixed) }}" class="w-full border rounded-lg px-3 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Fee Percentage (%)</label>
+                <input type="number" step="0.01" name="fee_percentage" value="{{ old('fee_percentage', $paymentMethod->fee_percentage) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
         </div>
 
-        <div class="flex justify-end space-x-4">
-            <a href="{{ route('admin.payment-methods.index') }}" class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Cancel</a>
-            <button type="submit" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">Update</button>
+        {{-- Instructions --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
+            <textarea name="instructions" class="w-full border rounded-lg px-3 py-2" rows="3">{{ old('instructions', $paymentMethod->instructions) }}</textarea>
         </div>
+
+        {{-- Active --}}
+        <div class="flex items-center gap-2">
+            <input type="checkbox" name="is_active" value="1" {{ $paymentMethod->is_active ? 'checked' : '' }} class="rounded">
+            <label class="text-sm text-gray-700">Active</label>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold">
+            Update Payment Method
+        </button>
     </form>
 </div>
 
 <script>
-document.getElementById('category').addEventListener('change', function() {
-    document.getElementById('mobile_wallet_fields').classList.add('hidden');
-    document.getElementById('bank_fields').classList.add('hidden');
-    document.getElementById('crypto_fields').classList.add('hidden');
-    document.getElementById('other_fields').classList.add('hidden');
-    if (this.value) document.getElementById(this.value + '_fields').classList.remove('hidden');
-});
+    function toggleFields() {
+        const cat = document.getElementById('category').value;
+        document.getElementById('mobile_wallet_fields').style.display = cat === 'mobile_wallet' ? 'block' : 'none';
+        document.getElementById('bank_fields').style.display = cat === 'bank' ? 'block' : 'none';
+        document.getElementById('crypto_fields').style.display = cat === 'crypto' ? 'block' : 'none';
+        document.getElementById('other_fields').style.display = cat === 'other' ? 'block' : 'none';
+    }
+    // Run on page load to show the correct fields
+    toggleFields();
 </script>
 @endsection
