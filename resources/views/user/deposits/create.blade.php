@@ -61,8 +61,14 @@
                     @forelse($paymentMethods as $method)
                         @php
                             $details = $method->account_details ?? [];
-                            $cat = $details['category'] ?? 'unknown';
-                            $displayAccount = $details['account_number'] ?? $details['number'] ?? $details['wallet_address'] ?? $details['address'] ?? $details['account_info'] ?? $details['account'] ?? '';
+                            // Get the main display number from any possible key
+                            $mainNumber = null;
+                            foreach (['account_number', 'number', 'wallet_address', 'address', 'account_info', 'account'] as $key) {
+                                if (!empty($details[$key])) {
+                                    $mainNumber = $details[$key];
+                                    break;
+                                }
+                            }
                         @endphp
                         <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all payment-method-option">
                             <input type="radio" name="method" value="{{ $method->code }}" 
@@ -74,8 +80,8 @@
                                 {{ old('method') == $method->code ? 'checked' : '' }}>
                             <div class="flex-1">
                                 <p class="font-medium text-gray-900">{{ $method->name }}</p>
-                                @if($displayAccount)
-                                    <p class="text-sm text-gray-500">{{ $displayAccount }}</p>
+                                @if($mainNumber)
+                                    <p class="text-sm text-gray-500">{{ $mainNumber }}</p>
                                 @endif
                                 @if($method->min_amount || $method->max_amount)
                                     <p class="text-xs text-gray-400">Min: {{ format_currency($method->min_amount ?? 0) }} | Max: {{ format_currency($method->max_amount ?? 999999) }}</p>
@@ -203,35 +209,48 @@ function setAmount(amount) {
     document.querySelector('input[name="amount"]').value = amount;
 }
 
+// Helper: get the main account number/address from details object
+function getMainNumber(d) {
+    return d.account_number || d.number || d.wallet_address || d.address || d.account_info || d.account || '';
+}
+
+function getAccountType(d) {
+    return d.account_type || d.type || '';
+}
+
 function showAccountDetails(radio) {
-    const box = document.getElementById('account-details-box');
-    const wrapper = document.getElementById('account-info');
+    var box = document.getElementById('account-details-box');
+    var wrapper = document.getElementById('account-info');
     
     try {
-        const d = JSON.parse(radio.dataset.details || '{}');
-        const name = radio.dataset.name || '';
-        let html = '';
-        const cat = d.category || '';
+        var d = JSON.parse(radio.dataset.details || '{}');
+        var name = radio.dataset.name || '';
+        var html = '';
+        var cat = d.category || '';
+        var mainNum = getMainNumber(d);
+        var accType = getAccountType(d);
 
-        if (cat === 'mobile_wallet') {
-            if (d.account_type) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + d.account_type + '</p>';
-            if (d.account_number) html += '<p class="text-lg font-bold text-blue-900 my-1">' + d.account_number + '</p>';
+        if (cat === 'mobile_wallet' || (!cat && (d.number || d.type))) {
+            // Mobile wallet (new or old format)
+            if (accType) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + accType + '</p>';
+            if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
-        } else if (cat === 'bank') {
+        } else if (cat === 'bank' || (!cat && d.bank_name)) {
+            // Bank transfer
             if (d.bank_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
             if (d.branch_name || d.branch) html += '<p class="text-sm text-blue-700"><span class="font-medium">Branch:</span> ' + (d.branch_name || d.branch) + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">A/C Name:</span> ' + d.account_name + '</p>';
-            if (d.account_number) html += '<p class="text-lg font-bold text-blue-900 my-1">' + d.account_number + '</p>';
+            if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
             if (d.routing_number || d.routing) html += '<p class="text-sm text-blue-700"><span class="font-medium">Routing:</span> ' + (d.routing_number || d.routing) + '</p>';
             if (d.swift_code) html += '<p class="text-sm text-blue-700"><span class="font-medium">SWIFT:</span> ' + d.swift_code + '</p>';
-        } else if (cat === 'crypto') {
+        } else if (cat === 'crypto' || (!cat && (d.address || d.wallet_address))) {
+            // Crypto
             if (d.network) html += '<p class="text-sm text-blue-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
-            if (d.wallet_address || d.address) html += '<p class="text-sm font-bold text-blue-900 my-1 break-all">' + (d.wallet_address || d.address) + '</p>';
+            if (mainNum) html += '<p class="text-sm font-bold text-blue-900 my-1 break-all">' + mainNum + '</p>';
         } else {
-            // Fallback: show any recognizable keys
-            const mainVal = d.account_number || d.number || d.wallet_address || d.address || d.account_info || d.account || '';
-            if (mainVal) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainVal + '</p>';
-            if (d.type) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + d.type + '</p>';
+            // Generic fallback
+            if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
+            if (accType) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + accType + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
             if (d.bank_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
             if (d.network) html += '<p class="text-sm text-blue-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
