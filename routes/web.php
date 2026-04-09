@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\DepositController as AdminDepositController;
 use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\PaymentMethodController as AdminPaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -221,6 +222,16 @@ Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->gro
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
     Route::post('/announcements/{announcement}/toggle', [AnnouncementController::class, 'toggleStatus'])->name('announcements.toggle');
+
+
+    // Payment Methods
+    Route::get("/payment-methods", [AdminPaymentMethodController::class, "index"])->name("payment-methods.index");
+    Route::get("/payment-methods/create", [AdminPaymentMethodController::class, "create"])->name("payment-methods.create");
+    Route::post("/payment-methods", [AdminPaymentMethodController::class, "store"])->name("payment-methods.store");
+    Route::get("/payment-methods/{paymentMethod}/edit", [AdminPaymentMethodController::class, "edit"])->name("payment-methods.edit");
+    Route::put("/payment-methods/{paymentMethod}", [AdminPaymentMethodController::class, "update"])->name("payment-methods.update");
+    Route::delete("/payment-methods/{paymentMethod}", [AdminPaymentMethodController::class, "destroy"])->name("payment-methods.destroy");
+    Route::patch("/payment-methods/{paymentMethod}/toggle-status", [AdminPaymentMethodController::class, "toggleStatus"])->name("payment-methods.toggle-status");
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
