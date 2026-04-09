@@ -42,6 +42,11 @@ class Deposit extends Model
         return $this->belongsTo(User::class);
     }
 
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
     public function reviewer()
     {
         return $this->belongsTo(Admin::class, 'reviewed_by');

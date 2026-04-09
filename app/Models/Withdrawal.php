@@ -45,6 +45,11 @@ class Withdrawal extends Model
         return $this->belongsTo(User::class);
     }
 
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
     public function processor()
     {
         return $this->belongsTo(Admin::class, 'processed_by');
