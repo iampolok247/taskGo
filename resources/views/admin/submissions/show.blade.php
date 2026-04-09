@@ -32,7 +32,7 @@
                 @if($submission->proof_image)
                 <div class="mb-4">
                     <a href="{{ asset('storage/' . $submission->proof_image) }}" target="_blank">
-                        <img src="{{ asset('storage/' . $submission->proof_image) }}" alt="Proof Screenshot" class="w-full rounded-xl border">
+                        <img src="{{ asset('storage/' . $submission->proof_image) }}" alt="Proof Screenshot" class="max-w-full max-h-96 object-contain rounded-xl border mx-auto">
                     </a>
                 </div>
                 @endif
