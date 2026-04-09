@@ -66,6 +66,16 @@
             <input type="text" name="code" value="{{ old('code', $paymentMethod->code) }}" class="w-full border rounded-lg px-3 py-2" required>
         </div>
 
+        {{-- Type --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <select name="type" class="w-full border rounded-lg px-3 py-2" required>
+                <option value="deposit" {{ ($paymentMethod->type ?? 'both') == 'deposit' ? 'selected' : '' }}>Deposit Only</option>
+                <option value="withdrawal" {{ ($paymentMethod->type ?? 'both') == 'withdrawal' ? 'selected' : '' }}>Withdrawal Only</option>
+                <option value="both" {{ ($paymentMethod->type ?? 'both') == 'both' ? 'selected' : '' }}>Both</option>
+            </select>
+        </div>
+
         {{-- Category --}}
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
