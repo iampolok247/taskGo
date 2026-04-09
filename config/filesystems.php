@@ -27,7 +27,7 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => storage_path(''),  // Direct storage folder for cPanel compatibility
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
