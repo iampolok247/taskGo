@@ -98,9 +98,16 @@ class PaymentMethod extends Model
         return $query->orderBy('sort_order');
     }
 
-    // Accessor for account number from account_details
+    // Accessor for primary account detail from account_details
     public function getAccountNumberAttribute(): ?string
     {
-        return $this->account_details['number'] ?? $this->account_details['account'] ?? null;
+        $details = $this->account_details ?? [];
+
+        return $details['account_number']
+            ?? $details['wallet_address']
+            ?? $details['account_info']
+            ?? $details['number']
+            ?? $details['account']
+            ?? null;
     }
 }
