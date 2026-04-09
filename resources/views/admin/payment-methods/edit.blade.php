@@ -6,7 +6,7 @@
 @php
     $accountDetails = $paymentMethod->account_details ?? [];
     
-    // Smart category detection: new data has 'category' key, old data doesn't
+    // Smart category detection
     if (isset($accountDetails['category'])) {
         $category = $accountDetails['category'];
     } elseif (isset($accountDetails['number']) || isset($accountDetails['type'])) {
@@ -87,11 +87,11 @@
             </select>
         </div>
 
-        {{-- Mobile Wallet Fields --}}
+        {{-- Mobile Wallet Fields - UNIQUE field names with mw_ prefix --}}
         <div id="mobile_wallet_fields" class="space-y-4" style="display: none;">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
-                <select name="account_type" class="w-full border rounded-lg px-3 py-2">
+                <select name="mw_account_type" class="w-full border rounded-lg px-3 py-2">
                     <option value="Personal" {{ strtolower($accountType) == 'personal' ? 'selected' : '' }}>Personal</option>
                     <option value="Agent" {{ strtolower($accountType) == 'agent' ? 'selected' : '' }}>Agent</option>
                     <option value="Merchant" {{ strtolower($accountType) == 'merchant' ? 'selected' : '' }}>Merchant</option>
@@ -99,15 +99,15 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-                <input type="text" name="account_number" value="{{ old('account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2" placeholder="e.g. 01XXXXXXXXX">
+                <input type="text" name="mw_account_number" value="{{ old('mw_account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2" placeholder="e.g. 01XXXXXXXXX">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Name (Optional)</label>
-                <input type="text" name="account_name" value="{{ old('account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2" placeholder="Account holder name">
+                <input type="text" name="mw_account_name" value="{{ old('mw_account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2" placeholder="Account holder name">
             </div>
         </div>
 
-        {{-- Bank Fields --}}
+        {{-- Bank Fields - UNIQUE field names with bank_ prefix --}}
         <div id="bank_fields" class="space-y-4" style="display: none;">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
@@ -119,11 +119,11 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Name</label>
-                <input type="text" name="account_name" value="{{ old('account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2">
+                <input type="text" name="bank_account_name" value="{{ old('bank_account_name', $accountName) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-                <input type="text" name="account_number" value="{{ old('account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2">
+                <input type="text" name="bank_account_number" value="{{ old('bank_account_number', $accountNumber) }}" class="w-full border rounded-lg px-3 py-2">
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Routing Number</label>
@@ -205,13 +205,12 @@
 
 <script>
     function toggleFields() {
-        const cat = document.getElementById('category').value;
+        var cat = document.getElementById('category').value;
         document.getElementById('mobile_wallet_fields').style.display = cat === 'mobile_wallet' ? 'block' : 'none';
         document.getElementById('bank_fields').style.display = cat === 'bank' ? 'block' : 'none';
         document.getElementById('crypto_fields').style.display = cat === 'crypto' ? 'block' : 'none';
         document.getElementById('other_fields').style.display = cat === 'other' ? 'block' : 'none';
     }
-    // Run on page load to show the correct fields
     toggleFields();
 </script>
 @endsection

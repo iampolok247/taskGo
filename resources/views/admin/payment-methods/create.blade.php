@@ -9,6 +9,16 @@
         <div><h1 class="text-2xl font-bold text-gray-800">Add Payment Method</h1></div>
     </div>
 
+    @if($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul class="list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.payment-methods.store') }}" method="POST" enctype="multipart/form-data" class="max-w-4xl">
         @csrf
         
@@ -22,27 +32,27 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Method Type *</label>
                     <select name="type" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                        <option value="both">Both (Deposit & Withdrawal)</option>
-                        <option value="deposit">Deposit Only</option>
-                        <option value="withdrawal">Withdrawal Only</option>
+                        <option value="both" {{ old('type') == 'both' ? 'selected' : '' }}>Both (Deposit & Withdrawal)</option>
+                        <option value="deposit" {{ old('type') == 'deposit' ? 'selected' : '' }}>Deposit Only</option>
+                        <option value="withdrawal" {{ old('type') == 'withdrawal' ? 'selected' : '' }}>Withdrawal Only</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                     <select name="category" id="category" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                         <option value="">Select Category</option>
-                        <option value="mobile_wallet">Mobile Wallet (bKash, Nagad)</option>
-                        <option value="bank">Bank Transfer</option>
-                        <option value="crypto">Cryptocurrency</option>
-                        <option value="other">Other</option>
+                        <option value="mobile_wallet" {{ old('category') == 'mobile_wallet' ? 'selected' : '' }}>Mobile Wallet (bKash, Nagad)</option>
+                        <option value="bank" {{ old('category') == 'bank' ? 'selected' : '' }}>Bank Transfer</option>
+                        <option value="crypto" {{ old('category') == 'crypto' ? 'selected' : '' }}>Cryptocurrency</option>
+                        <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Currency *</label>
                     <select name="currency" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                        <option value="BDT">BDT - Bangladeshi Taka</option>
-                        <option value="USD">USD - US Dollar</option>
-                        <option value="USDT">USDT - Tether</option>
+                        <option value="BDT" {{ old('currency') == 'BDT' ? 'selected' : '' }}>BDT - Bangladeshi Taka</option>
+                        <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }}>USD - US Dollar</option>
+                        <option value="USDT" {{ old('currency') == 'USDT' ? 'selected' : '' }}>USDT - Tether</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
@@ -58,19 +68,19 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-                    <select name="account_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="Personal">Personal</option>
-                        <option value="Agent">Agent</option>
-                        <option value="Merchant">Merchant</option>
+                    <select name="mw_account_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
+                        <option value="Personal" {{ old('mw_account_type') == 'Personal' ? 'selected' : '' }}>Personal</option>
+                        <option value="Agent" {{ old('mw_account_type') == 'Agent' ? 'selected' : '' }}>Agent</option>
+                        <option value="Merchant" {{ old('mw_account_type') == 'Merchant' ? 'selected' : '' }}>Merchant</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label>
-                    <input type="text" name="account_number" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="01XXXXXXXXX">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Account Number *</label>
+                    <input type="text" name="mw_account_number" value="{{ old('mw_account_number') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="01XXXXXXXXX">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label>
-                    <input type="text" name="account_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
+                    <input type="text" name="mw_account_name" value="{{ old('mw_account_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
                 </div>
             </div>
         </div>
@@ -79,12 +89,12 @@
         <div id="bank_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 hidden">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Bank Account</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Bank Name</label><input type="text" name="bank_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Branch Name</label><input type="text" name="branch_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label><input type="text" name="account_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label><input type="text" name="account_number" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Routing Number</label><input type="text" name="routing_number" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">SWIFT Code</label><input type="text" name="swift_code" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Bank Name</label><input type="text" name="bank_name" value="{{ old('bank_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Branch Name</label><input type="text" name="branch_name" value="{{ old('branch_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Name</label><input type="text" name="bank_account_name" value="{{ old('bank_account_name') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Account Number</label><input type="text" name="bank_account_number" value="{{ old('bank_account_number') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Routing Number</label><input type="text" name="routing_number" value="{{ old('routing_number') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">SWIFT Code</label><input type="text" name="swift_code" value="{{ old('swift_code') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
             </div>
         </div>
 
@@ -95,43 +105,43 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Network</label>
                     <select name="network" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-                        <option value="TRC20">TRC20 (Tron)</option>
-                        <option value="ERC20">ERC20 (Ethereum)</option>
-                        <option value="BEP20">BEP20 (BSC)</option>
-                        <option value="Bitcoin">Bitcoin</option>
+                        <option value="TRC20" {{ old('network') == 'TRC20' ? 'selected' : '' }}>TRC20 (Tron)</option>
+                        <option value="ERC20" {{ old('network') == 'ERC20' ? 'selected' : '' }}>ERC20 (Ethereum)</option>
+                        <option value="BEP20" {{ old('network') == 'BEP20' ? 'selected' : '' }}>BEP20 (BSC)</option>
+                        <option value="Bitcoin" {{ old('network') == 'Bitcoin' ? 'selected' : '' }}>Bitcoin</option>
                     </select>
                 </div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Wallet Address</label><input type="text" name="wallet_address" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Wallet Address</label><input type="text" name="wallet_address" value="{{ old('wallet_address') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
             </div>
         </div>
 
         <!-- Other -->
         <div id="other_fields" class="bg-white rounded-xl shadow-sm p-6 mb-6 hidden">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Account Info</h2>
-            <textarea name="account_info" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></textarea>
+            <textarea name="account_info" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">{{ old('account_info') }}</textarea>
         </div>
 
         <!-- Limits & Fees -->
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Limits & Fees</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Min Amount *</label><input type="number" name="min_amount" value="100" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Max Amount</label><input type="number" name="max_amount" step="0.01" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="Leave empty for unlimited"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee</label><input type="number" name="fee_fixed" value="0" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Percentage Fee (%)</label><input type="number" name="fee_percentage" value="0" step="0.01" max="100" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Min Amount *</label><input type="number" name="min_amount" value="{{ old('min_amount', 100) }}" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Max Amount</label><input type="number" name="max_amount" value="{{ old('max_amount') }}" step="0.01" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="Leave empty for unlimited"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Fixed Fee</label><input type="number" name="fee_fixed" value="{{ old('fee_fixed', 0) }}" step="0.01" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Percentage Fee (%)</label><input type="number" name="fee_percentage" value="{{ old('fee_percentage', 0) }}" step="0.01" max="100" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
             </div>
         </div>
 
         <!-- Instructions -->
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Instructions</h2>
-            <textarea name="instructions" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="Payment instructions for users..."></textarea>
+            <textarea name="instructions" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg" placeholder="Payment instructions for users...">{{ old('instructions') }}</textarea>
         </div>
 
         <!-- Settings -->
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label><input type="number" name="sort_order" value="0" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
+                <div><label class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label><input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
                 <div class="flex items-center pt-8">
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" name="is_active" class="sr-only peer" checked>
@@ -150,12 +160,15 @@
 </div>
 
 <script>
-document.getElementById('category').addEventListener('change', function() {
-    document.getElementById('mobile_wallet_fields').classList.add('hidden');
-    document.getElementById('bank_fields').classList.add('hidden');
-    document.getElementById('crypto_fields').classList.add('hidden');
-    document.getElementById('other_fields').classList.add('hidden');
-    if (this.value) document.getElementById(this.value + '_fields').classList.remove('hidden');
-});
+function toggleCategoryFields() {
+    var cat = document.getElementById('category').value;
+    document.getElementById('mobile_wallet_fields').classList.toggle('hidden', cat !== 'mobile_wallet');
+    document.getElementById('bank_fields').classList.toggle('hidden', cat !== 'bank');
+    document.getElementById('crypto_fields').classList.toggle('hidden', cat !== 'crypto');
+    document.getElementById('other_fields').classList.toggle('hidden', cat !== 'other');
+}
+document.getElementById('category').addEventListener('change', toggleCategoryFields);
+// Run on load for old() values
+toggleCategoryFields();
 </script>
 @endsection

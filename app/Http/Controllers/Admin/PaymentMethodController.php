@@ -142,15 +142,17 @@ class PaymentMethodController extends Controller
 
         switch ($request->category) {
             case 'mobile_wallet':
-                $details['account_type'] = $request->account_type;
-                $details['account_number'] = $request->account_number;
-                $details['account_name'] = $request->account_name;
+                // Form fields use mw_ prefix to avoid name collisions
+                $details['account_type'] = $request->mw_account_type;
+                $details['account_number'] = $request->mw_account_number;
+                $details['account_name'] = $request->mw_account_name;
                 break;
             case 'bank':
+                // Form fields use bank_ prefix for account_number/account_name
                 $details['bank_name'] = $request->bank_name;
                 $details['branch_name'] = $request->branch_name;
-                $details['account_name'] = $request->account_name;
-                $details['account_number'] = $request->account_number;
+                $details['account_name'] = $request->bank_account_name;
+                $details['account_number'] = $request->bank_account_number;
                 $details['routing_number'] = $request->routing_number;
                 $details['swift_code'] = $request->swift_code;
                 break;
