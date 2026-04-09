@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,14 +91,39 @@ class WithdrawalController extends Controller
             'method' => $validated['method'],
             'account_name' => $validated['account_name'],
             'account_number' => $validated['account_number'],
-            'bank_name' => $validated['bank_name'],
-            'branch_name' => $validated['branch_name'],
-            'routing_number' => $validated['routing_number'],
-            'additional_info' => $validated['additional_info'],
+            'bank_name' => $validated['bank_name'] ?? null,
+            'branch_name' => $validated['branch_name'] ?? null,
+            'routing_number' => $validated['routing_number'] ?? null,
+            'additional_info' => $validated['additional_info'] ?? null,
+        ]);
+
+        // Create transaction record
+        Transaction::create([
+            'user_id' => $user->id,
+            'transaction_id' => 'WTH' . strtoupper(uniqid()),
+            'type' => 'withdrawal',
+            'amount' => $validated['amount'],
+            'currency' => 'BDT',
+            'status' => 'pending',
+            'description' => 'Withdrawal request via ' . strtoupper($validated['method']),
+            'transactionable_type' => Withdrawal::class,
+            'transactionable_id' => $withdrawal->id,
+            'balance_before' => $wallet->main_balance + $validated['amount'],
+            'balance_after' => $wallet->main_balance,
+        ]);
+
+        // Notify user
+        Notification::create([
+            'notifiable_type' => User::class,
+            'notifiable_id' => $user->id,
+            'title' => 'Withdrawal Request Submitted',
+            'message' => 'Your withdrawal request for ' . format_currency($validated['amount']) . ' has been submitted and is pending approval.',
+            'type' => 'info',
+            'icon' => 'clock',
         ]);
 
         return redirect()->route('user.withdrawals.index')
-            ->with('success', 'Withdrawal request submitted successfully! Amount: ৳' . number_format($finalAmount, 2) . ' (Fee: ৳' . number_format($fee, 2) . ')');
+            ->with('success', 'Withdrawal request submitted successfully! Amount: ' . format_currency($finalAmount) . ' (Fee: ' . format_currency($fee) . ')');
     }
 
     public function show(Withdrawal $withdrawal)
