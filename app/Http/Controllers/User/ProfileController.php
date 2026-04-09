@@ -34,7 +34,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
-            'currency_code' => 'nullable|string|size:3|exists:currencies,code',
+            'currency_code' => 'nullable|string|max:10|exists:currencies,code',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
