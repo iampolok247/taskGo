@@ -122,6 +122,9 @@ class TaskController extends Controller
             'status' => 'pending',
         ]);
 
+        // Add reward to pending balance
+        $user->wallet->addToPending($task->reward);
+
         return redirect()->route('user.tasks.index')
             ->with('success', 'Task submitted successfully! Waiting for approval.');
     }
