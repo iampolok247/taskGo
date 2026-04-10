@@ -35,7 +35,17 @@ class Wallet extends Model
     // Accessor for bonus_balance (for backward compatibility with views)
     public function getBonusBalanceAttribute(): float
     {
-        return 0.00; // Or implement actual bonus logic if needed
+        return 0.00;
+    }
+
+    /**
+     * Withdrawable balance = total_earned - total_withdrawn
+     * Users can only withdraw from their earnings, NOT from deposited money
+     */
+    public function getWithdrawableBalanceAttribute(): float
+    {
+        $withdrawable = (float) $this->total_earned - (float) $this->total_withdrawn;
+        return max(0, $withdrawable);
     }
 
     public function user()
@@ -76,9 +86,14 @@ class Wallet extends Model
         $this->increment('total_deposited', $amount);
     }
 
+    /**
+     * Process withdrawal - only from earnings (withdrawable balance)
+     * Deducts from main_balance and increments total_withdrawn
+     */
     public function processWithdrawal(float $amount): bool
     {
-        if ($this->main_balance >= $amount) {
+        // Check against withdrawable balance (earnings - already withdrawn)
+        if ($this->withdrawable_balance >= $amount && $this->main_balance >= $amount) {
             $this->decrement('main_balance', $amount);
             $this->increment('total_withdrawn', $amount);
             return true;

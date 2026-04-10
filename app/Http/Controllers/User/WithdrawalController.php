@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Currency;
 use App\Models\Notification;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
@@ -39,12 +40,15 @@ class WithdrawalController extends Controller
         $maxWithdrawal = Setting::getValue('max_withdrawal_amount', 50000);
         $withdrawalFee = Setting::getValue('withdrawal_fee_percent', 0);
 
-        $recentWithdrawals = \App\Models\Withdrawal::where('user_id', $user->id)
+        $recentWithdrawals = Withdrawal::where('user_id', $user->id)
             ->latest()
             ->take(5)
             ->get();
 
-        return view('user.withdrawals.create', compact('wallet', 'paymentMethods', 'minWithdrawal', 'maxWithdrawal', 'recentWithdrawals', 'withdrawalFee'));
+        // Get active currencies for conversion dropdown
+        $currencies = Currency::where('is_active', true)->orderBy('name')->get();
+
+        return view('user.withdrawals.create', compact('wallet', 'paymentMethods', 'minWithdrawal', 'maxWithdrawal', 'recentWithdrawals', 'withdrawalFee', 'currencies'));
     }
 
     public function store(Request $request)
@@ -57,7 +61,8 @@ class WithdrawalController extends Controller
 
         $validated = $request->validate([
             'amount' => "required|numeric|min:{$minWithdraw}|max:{$maxWithdraw}",
-            'method' => 'required|in:usdt,bank,bkash,nagad,rocket',
+            'withdrawal_currency' => 'nullable|string|max:10',
+            'method' => 'required|string|max:50',
             'account_name' => 'required|string|max:100',
             'account_number' => 'required|string|max:50',
             'bank_name' => 'nullable|required_if:method,bank|string|max:100',
@@ -66,26 +71,59 @@ class WithdrawalController extends Controller
             'additional_info' => 'nullable|string|max:500',
         ]);
 
-        // Check balance
-        if ($wallet->main_balance < $validated['amount']) {
+        // Handle currency conversion - amount entered is in selected currency, convert to USD
+        $withdrawCurrency = $validated['withdrawal_currency'] ?? 'USD';
+        $enteredAmount = $validated['amount'];
+        $usdAmount = $enteredAmount;
+
+        if ($withdrawCurrency !== 'USD') {
+            $currency = Currency::getByCode($withdrawCurrency);
+            if ($currency && $currency->exchange_rate > 0) {
+                $usdAmount = $currency->toUSD($enteredAmount);
+            }
+        }
+
+        // Check withdrawable balance (earnings only, NOT deposits)
+        $withdrawableBalance = $wallet->withdrawable_balance;
+        if ($withdrawableBalance < $usdAmount) {
+            $displayBalance = $withdrawableBalance;
+            if ($withdrawCurrency !== 'USD') {
+                $currency = Currency::getByCode($withdrawCurrency);
+                if ($currency) {
+                    $displayBalance = $currency->fromUSD($withdrawableBalance);
+                }
+            }
             return back()->withErrors([
-                'amount' => 'Insufficient balance. Your available balance is ৳' . number_format($wallet->main_balance, 2),
+                'amount' => 'Insufficient earnings balance. Your withdrawable earnings: ' . format_currency($withdrawableBalance) . ($withdrawCurrency !== 'USD' ? ' (≈ ' . number_format($displayBalance, 2) . ' ' . $withdrawCurrency . ')' : '') . '. Deposited funds cannot be withdrawn.',
+            ])->withInput();
+        }
+
+        // Also check main_balance has enough funds
+        if ($wallet->main_balance < $usdAmount) {
+            return back()->withErrors([
+                'amount' => 'Insufficient balance. Your available balance is ' . format_currency($wallet->main_balance),
             ])->withInput();
         }
 
         // Get payment method and calculate fee
         $paymentMethod = PaymentMethod::where('code', $validated['method'])->first();
-        $fee = $paymentMethod ? $paymentMethod->calculateFee($validated['amount']) : 0;
-        $finalAmount = $validated['amount'] - $fee;
+        $fee = $paymentMethod ? $paymentMethod->calculateFee($usdAmount) : 0;
+        $finalAmount = $usdAmount - $fee;
 
-        // Deduct from wallet
-        $wallet->deductFromMain($validated['amount']);
+        // Deduct from wallet (uses processWithdrawal which checks withdrawable_balance)
+        if (!$wallet->processWithdrawal($usdAmount)) {
+            return back()->withErrors([
+                'amount' => 'Unable to process withdrawal. Please try again.',
+            ])->withInput();
+        }
 
         // Create withdrawal
         $withdrawal = Withdrawal::create([
             'user_id' => $user->id,
-            'amount' => $validated['amount'],
-            'currency' => 'BDT',
+            'amount' => $usdAmount,
+            'currency' => 'USD',
+            'converted_amount' => $withdrawCurrency !== 'USD' ? $enteredAmount : null,
+            'converted_currency' => $withdrawCurrency !== 'USD' ? $withdrawCurrency : null,
             'fee' => $fee,
             'final_amount' => $finalAmount,
             'method' => $validated['method'],
@@ -102,22 +140,27 @@ class WithdrawalController extends Controller
             'user_id' => $user->id,
             'transaction_id' => 'WTH' . strtoupper(uniqid()),
             'type' => 'withdrawal',
-            'amount' => $validated['amount'],
-            'currency' => 'BDT',
+            'amount' => $usdAmount,
+            'currency' => 'USD',
             'status' => 'pending',
             'description' => 'Withdrawal request via ' . strtoupper($validated['method']),
             'transactionable_type' => Withdrawal::class,
             'transactionable_id' => $withdrawal->id,
-            'balance_before' => $wallet->main_balance + $validated['amount'],
+            'balance_before' => $wallet->main_balance + $usdAmount,
             'balance_after' => $wallet->main_balance,
         ]);
+
+        // Display amount
+        $displayAmount = ($withdrawCurrency !== 'USD')
+            ? number_format($enteredAmount, 2) . ' ' . $withdrawCurrency . ' (' . format_currency($usdAmount) . ')'
+            : format_currency($usdAmount);
 
         // Notify user
         Notification::create([
             'notifiable_type' => User::class,
             'notifiable_id' => $user->id,
             'title' => 'Withdrawal Request Submitted',
-            'message' => 'Your withdrawal request for ' . format_currency($validated['amount']) . ' has been submitted and is pending approval.',
+            'message' => 'Your withdrawal request for ' . $displayAmount . ' has been submitted and is pending approval.',
             'type' => 'info',
             'icon' => 'clock',
         ]);
@@ -128,7 +171,9 @@ class WithdrawalController extends Controller
 
     public function show(Withdrawal $withdrawal)
     {
-        $this->authorize('view', $withdrawal);
+        if ($withdrawal->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         return view('user.withdrawals.show', compact('withdrawal'));
     }

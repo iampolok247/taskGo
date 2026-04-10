@@ -132,4 +132,32 @@ class UserController extends Controller
 
         return back()->with('success', 'Balance adjusted successfully!');
     }
+
+    public function destroy(User $user)
+    {
+        $userName = $user->name;
+
+        // Delete related records
+        $user->deposits()->delete();
+        $user->withdrawals()->delete();
+        $user->transactions()->delete();
+        $user->taskSubmissions()->delete();
+        $user->notifications()->delete();
+
+        // Delete wallet
+        if ($user->wallet) {
+            $user->wallet->delete();
+        }
+
+        // Delete referrals where user is referrer or referred
+        \App\Models\Referral::where('referrer_id', $user->id)
+            ->orWhere('referred_id', $user->id)
+            ->delete();
+
+        // Delete the user
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('success', "User '{$userName}' has been permanently deleted.");
+    }
 }

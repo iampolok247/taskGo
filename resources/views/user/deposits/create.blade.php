@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-500">Current Balance</p>
-                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance, 2) }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance ?? 0) }}</p>
             </div>
             <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,30 +25,55 @@
         
         <form action="{{ route('user.deposits.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
+
+            <!-- Currency Selection -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Deposit Currency</label>
+                <select name="deposit_currency" id="deposit_currency" onchange="updateCurrencyConversion()"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    @foreach($currencies as $curr)
+                        <option value="{{ $curr->code }}" 
+                            data-symbol="{{ $curr->symbol }}" 
+                            data-rate="{{ $curr->exchange_rate }}"
+                            {{ old('deposit_currency', 'BDT') == $curr->code ? 'selected' : '' }}>
+                            {{ $curr->code }} - {{ $curr->name }} ({{ $curr->symbol }})
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Select the currency you are depositing in</p>
+            </div>
             
             <!-- Amount -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Amount ({{ currency_symbol() }})</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
-                    <input type="number" name="amount" value="{{ old('amount') }}" min="100" step="0.01"
-                        class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        placeholder="Enter amount">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" id="currency-symbol">৳</span>
+                    <input type="number" name="amount" id="deposit_amount" value="{{ old('amount') }}" min="1" step="0.01"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Enter amount" oninput="updateCurrencyConversion()">
                 </div>
-                <p class="text-xs text-gray-500 mt-1">Minimum deposit: {{ format_currency(100) }}</p>
                 @error('amount')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <!-- Conversion Preview -->
+            <div id="conversion-preview" class="hidden p-3 bg-indigo-50 rounded-xl">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-indigo-700">Converted Amount (USD)</span>
+                    <span class="text-sm font-bold text-indigo-900" id="converted-usd">$0.00</span>
+                </div>
+                <p class="text-xs text-indigo-500 mt-1">Rate: 1 USD = <span id="exchange-rate-display">1</span> <span id="currency-code-display">USD</span></p>
             </div>
             
             <!-- Quick Amounts -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Quick Select</label>
-                <div class="grid grid-cols-4 gap-2">
+                <div class="grid grid-cols-4 gap-2" id="quick-amounts">
                     @foreach([100, 500, 1000, 2000] as $quickAmount)
                         <button type="button" onclick="setAmount({{ $quickAmount }})" 
-                            class="py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
-                            {{ format_currency($quickAmount) }}
+                            class="py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all quick-btn">
+                            {{ $quickAmount }}
                         </button>
                     @endforeach
                 </div>
@@ -61,7 +86,6 @@
                     @forelse($paymentMethods as $method)
                         @php
                             $details = $method->account_details ?? [];
-                            // Get the main display number from any possible key
                             $mainNumber = null;
                             foreach (['account_number', 'number', 'wallet_address', 'address', 'account_info', 'account'] as $key) {
                                 if (!empty($details[$key])) {
@@ -84,7 +108,7 @@
                                     <p class="text-sm text-gray-500">{{ $mainNumber }}</p>
                                 @endif
                                 @if($method->min_amount || $method->max_amount)
-                                    <p class="text-xs text-gray-400">Min: {{ format_currency($method->min_amount ?? 0) }} | Max: {{ format_currency($method->max_amount ?? 999999) }}</p>
+                                    <p class="text-xs text-gray-400">Min: {{ number_format($method->min_amount ?? 0) }} | Max: {{ number_format($method->max_amount ?? 999999) }}</p>
                                 @endif
                             </div>
                             @if($method->icon)
@@ -171,17 +195,11 @@
                             @elseif($deposit->status == 'pending') bg-yellow-100
                             @else bg-red-100 @endif">
                             @if($deposit->status == 'approved')
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             @elseif($deposit->status == 'pending')
-                                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
+                                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             @else
-                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
@@ -189,7 +207,13 @@
                             <p class="text-xs text-gray-500">{{ $deposit->created_at->format('M d, Y h:i A') }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-900">{{ format_currency($deposit->amount, 2) }}</p>
+                            <p class="text-sm font-semibold text-gray-900">
+                                @if($deposit->converted_amount && $deposit->converted_currency)
+                                    {{ number_format($deposit->converted_amount, 2) }} {{ $deposit->converted_currency }}
+                                @else
+                                    {{ format_currency($deposit->amount) }}
+                                @endif
+                            </p>
                             <span class="text-xs px-2 py-0.5 rounded-full
                                 @if($deposit->status == 'approved') bg-green-100 text-green-700
                                 @elseif($deposit->status == 'pending') bg-yellow-100 text-yellow-700
@@ -206,8 +230,44 @@
 
 <script>
 function setAmount(amount) {
-    document.querySelector('input[name="amount"]').value = amount;
+    document.getElementById('deposit_amount').value = amount;
+    updateCurrencyConversion();
 }
+
+function updateCurrencyConversion() {
+    var select = document.getElementById('deposit_currency');
+    var option = select.options[select.selectedIndex];
+    var symbol = option.dataset.symbol || '$';
+    var rate = parseFloat(option.dataset.rate) || 1;
+    var code = select.value;
+    var amount = parseFloat(document.getElementById('deposit_amount').value) || 0;
+
+    // Update currency symbol
+    document.getElementById('currency-symbol').textContent = symbol;
+
+    // Update quick amount button text
+    document.querySelectorAll('.quick-btn').forEach(function(btn) {
+        var val = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+        btn.textContent = symbol + val;
+    });
+
+    // Show conversion preview if not USD
+    var preview = document.getElementById('conversion-preview');
+    if (code !== 'USD' && amount > 0) {
+        var usdAmount = amount / rate;
+        document.getElementById('converted-usd').textContent = '$' + usdAmount.toFixed(2);
+        document.getElementById('exchange-rate-display').textContent = rate;
+        document.getElementById('currency-code-display').textContent = code;
+        preview.classList.remove('hidden');
+    } else {
+        preview.classList.add('hidden');
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCurrencyConversion();
+});
 
 // Helper: get the main account number/address from details object
 function getMainNumber(d) {
@@ -231,29 +291,22 @@ function showAccountDetails(radio) {
         var accType = getAccountType(d);
 
         if (cat === 'mobile_wallet' || (!cat && (d.number || d.type))) {
-            // Mobile wallet (new or old format)
             if (accType) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + accType + '</p>';
             if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
         } else if (cat === 'bank' || (!cat && d.bank_name)) {
-            // Bank transfer
             if (d.bank_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
             if (d.branch_name || d.branch) html += '<p class="text-sm text-blue-700"><span class="font-medium">Branch:</span> ' + (d.branch_name || d.branch) + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">A/C Name:</span> ' + d.account_name + '</p>';
             if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
             if (d.routing_number || d.routing) html += '<p class="text-sm text-blue-700"><span class="font-medium">Routing:</span> ' + (d.routing_number || d.routing) + '</p>';
-            if (d.swift_code) html += '<p class="text-sm text-blue-700"><span class="font-medium">SWIFT:</span> ' + d.swift_code + '</p>';
         } else if (cat === 'crypto' || (!cat && (d.address || d.wallet_address))) {
-            // Crypto
             if (d.network) html += '<p class="text-sm text-blue-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
             if (mainNum) html += '<p class="text-sm font-bold text-blue-900 my-1 break-all">' + mainNum + '</p>';
         } else {
-            // Generic fallback
             if (mainNum) html += '<p class="text-lg font-bold text-blue-900 my-1">' + mainNum + '</p>';
             if (accType) html += '<p class="text-sm text-blue-700"><span class="font-medium">Type:</span> ' + accType + '</p>';
             if (d.account_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Name:</span> ' + d.account_name + '</p>';
-            if (d.bank_name) html += '<p class="text-sm text-blue-700"><span class="font-medium">Bank:</span> ' + d.bank_name + '</p>';
-            if (d.network) html += '<p class="text-sm text-blue-700"><span class="font-medium">Network:</span> ' + d.network + '</p>';
         }
 
         if (html) {
@@ -279,28 +332,22 @@ if (checked) showAccountDetails(checked);
 // Image upload
 var dropzone = document.getElementById('dropzone');
 var fileInput = document.getElementById('proof_image');
-var previewContainer = document.getElementById('preview-container');
-var previewImage = document.getElementById('preview-image');
-var uploadPrompt = document.getElementById('upload-prompt');
-
 dropzone.addEventListener('click', function() { fileInput.click(); });
-
 fileInput.addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
         var reader = new FileReader();
         reader.onload = function(ev) {
-            previewImage.src = ev.target.result;
-            previewContainer.classList.remove('hidden');
-            uploadPrompt.classList.add('hidden');
+            document.getElementById('preview-image').src = ev.target.result;
+            document.getElementById('preview-container').classList.remove('hidden');
+            document.getElementById('upload-prompt').classList.add('hidden');
         };
         reader.readAsDataURL(e.target.files[0]);
     }
 });
-
 function removeImage() {
-    fileInput.value = '';
-    previewContainer.classList.add('hidden');
-    uploadPrompt.classList.remove('hidden');
+    document.getElementById('proof_image').value = '';
+    document.getElementById('preview-container').classList.add('hidden');
+    document.getElementById('upload-prompt').classList.remove('hidden');
 }
 </script>
 @endsection

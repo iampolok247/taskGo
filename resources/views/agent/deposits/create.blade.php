@@ -10,7 +10,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm text-gray-500">Current Balance</p>
-                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance, 2) }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ format_currency($wallet->main_balance ?? 0) }}</p>
             </div>
             <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                 <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,32 +26,70 @@
         
         <form action="{{ route('agent.deposits.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
+
+            <!-- Currency Selection -->
+            @if(isset($currencies) && $currencies->count() > 0)
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Deposit Currency</label>
+                <select name="deposit_currency" id="deposit_currency" onchange="updateCurrencyConversion()"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    @foreach($currencies as $curr)
+                        <option value="{{ $curr->code }}" 
+                            data-symbol="{{ $curr->symbol }}" 
+                            data-rate="{{ $curr->exchange_rate }}"
+                            {{ old('deposit_currency', 'BDT') == $curr->code ? 'selected' : '' }}>
+                            {{ $curr->code }} - {{ $curr->name }} ({{ $curr->symbol }})
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Select the currency you are depositing in</p>
+            </div>
+            @endif
             
             <!-- Amount -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Amount ({{ currency_symbol() }})</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
-                    <input type="number" name="amount" value="{{ old('amount') }}" min="100" step="0.01"
-                        class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                        placeholder="Enter amount">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" id="currency-symbol">৳</span>
+                    <input type="number" name="amount" id="deposit-amount" value="{{ old('amount') }}" min="1" step="0.01"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        placeholder="Enter amount" oninput="updateCurrencyConversion()">
                 </div>
-                <p class="text-xs text-gray-500 mt-1">Minimum deposit: {{ format_currency(100) }}</p>
                 @error('amount')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <!-- Conversion Preview -->
+            <div id="conversion-preview" class="hidden p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                <div class="flex items-center gap-2 mb-1">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-emerald-800">Currency Conversion</span>
+                </div>
+                <p class="text-sm text-emerald-700">
+                    <span id="original-amount"></span> = <strong id="converted-amount"></strong>
+                </p>
+                <p class="text-xs text-emerald-600 mt-1">Rate: 1 USD = <span id="exchange-rate"></span></p>
             </div>
             
             <!-- Quick Amounts -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Quick Select</label>
                 <div class="grid grid-cols-4 gap-2">
-                    @foreach([100, 500, 1000, 2000] as $quickAmount)
-                        <button type="button" onclick="setAmount({{ $quickAmount }})" 
-                            class="py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
-                            {{ format_currency($quickAmount) }}
-                        </button>
-                    @endforeach
+                    <button type="button" onclick="setAmount(100)" class="quick-btn py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+                        <span class="q-sym">৳</span>100
+                    </button>
+                    <button type="button" onclick="setAmount(500)" class="quick-btn py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+                        <span class="q-sym">৳</span>500
+                    </button>
+                    <button type="button" onclick="setAmount(1000)" class="quick-btn py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+                        <span class="q-sym">৳</span>1,000
+                    </button>
+                    <button type="button" onclick="setAmount(5000)" class="quick-btn py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
+                        <span class="q-sym">৳</span>5,000
+                    </button>
                 </div>
             </div>
             
@@ -190,6 +228,9 @@
                         </div>
                         <div class="text-right">
                             <p class="text-sm font-semibold text-gray-900">{{ format_currency($deposit->amount, 2) }}</p>
+                            @if($deposit->converted_amount)
+                                <p class="text-xs text-gray-500">{{ number_format($deposit->converted_amount, 2) }} {{ $deposit->converted_currency }}</p>
+                            @endif
                             <span class="text-xs px-2 py-0.5 rounded-full
                                 @if($deposit->status == 'approved') bg-green-100 text-green-700
                                 @elseif($deposit->status == 'pending') bg-yellow-100 text-yellow-700
@@ -205,8 +246,47 @@
 </div>
 
 <script>
+function getSelectedCurrency() {
+    var sel = document.getElementById('deposit_currency');
+    if (!sel) return { code: 'USD', symbol: '$', rate: 1 };
+    var opt = sel.options[sel.selectedIndex];
+    return {
+        code: opt.value,
+        symbol: opt.dataset.symbol || '$',
+        rate: parseFloat(opt.dataset.rate) || 1
+    };
+}
+
+function updateCurrencyConversion() {
+    var c = getSelectedCurrency();
+    var amount = parseFloat(document.getElementById('deposit-amount').value) || 0;
+    
+    // Update currency symbol
+    document.getElementById('currency-symbol').textContent = c.symbol;
+    
+    // Update quick amount buttons
+    document.querySelectorAll('.q-sym').forEach(function(el) { el.textContent = c.symbol; });
+
+    // Show/hide conversion preview
+    var preview = document.getElementById('conversion-preview');
+    if (amount > 0 && c.code !== 'USD') {
+        var usdAmount = amount / c.rate;
+        document.getElementById('original-amount').textContent = c.symbol + number_format(amount, 2) + ' ' + c.code;
+        document.getElementById('converted-amount').textContent = '$' + number_format(usdAmount, 2) + ' USD';
+        document.getElementById('exchange-rate').textContent = c.symbol + number_format(c.rate, 4) + ' ' + c.code;
+        preview.classList.remove('hidden');
+    } else {
+        preview.classList.add('hidden');
+    }
+}
+
+function number_format(num, decimals) {
+    return parseFloat(num).toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 function setAmount(amount) {
-    document.querySelector('input[name="amount"]').value = amount;
+    document.getElementById('deposit-amount').value = amount;
+    updateCurrencyConversion();
 }
 
 function getMainNumber(d) {
@@ -268,6 +348,7 @@ document.querySelectorAll('input[name="method"]').forEach(function(radio) {
 var checked = document.querySelector('input[name="method"]:checked');
 if (checked) showAccountDetails(checked);
 
+// Image upload handling
 var dropzone = document.getElementById('dropzone');
 var fileInput = document.getElementById('proof_image');
 var previewContainer = document.getElementById('preview-container');
@@ -293,5 +374,10 @@ function removeImage() {
     previewContainer.classList.add('hidden');
     uploadPrompt.classList.remove('hidden');
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCurrencyConversion();
+});
 </script>
 @endsection

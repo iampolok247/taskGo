@@ -14,6 +14,8 @@ class Withdrawal extends Model
         'agent_id',
         'amount',
         'currency',
+        'converted_amount',
+        'converted_currency',
         'fee',
         'final_amount',
         'method',
@@ -34,6 +36,7 @@ class Withdrawal extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'converted_amount' => 'decimal:2',
             'fee' => 'decimal:2',
             'final_amount' => 'decimal:2',
             'processed_at' => 'datetime',

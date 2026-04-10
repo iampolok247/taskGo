@@ -8,28 +8,55 @@ use App\Models\CurrencyRate;
 use App\Models\PaymentMethod;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SettingsController extends Controller
 {
     public function index()
     {
-        $settings = Setting::all()->groupBy('group');
+        // Get all settings as key => value pairs
+        $settings = Setting::pluck('value', 'key')->toArray();
         
         return view('admin.settings.index', compact('settings'));
     }
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'settings' => 'required|array',
-            'settings.*' => 'nullable',
-        ]);
+        // Get all settings keys from the request (flat format: name="site_name")
+        $settingsKeys = [
+            'site_name', 'support_email', 'support_phone',
+            'daily_task_limit', 'default_task_reward',
+            'min_deposit', 'max_deposit', 'min_withdrawal', 'max_withdrawal',
+            'withdrawal_fee_percent',
+            'referral_signup_bonus', 'referral_task_commission',
+            'default_agent_commission',
+        ];
 
-        foreach ($validated['settings'] as $key => $value) {
-            $setting = Setting::where('key', $key)->first();
-            if ($setting) {
-                $setting->update(['value' => $value]);
+        foreach ($settingsKeys as $key) {
+            if ($request->has($key)) {
+                $value = $request->input($key);
+                
+                // Determine type
+                $setting = Setting::where('key', $key)->first();
+                if ($setting) {
+                    $setting->update(['value' => $value ?? '']);
+                    Cache::forget("setting.{$key}");
+                } else {
+                    // Create new setting if it doesn't exist
+                    Setting::create([
+                        'key' => $key,
+                        'value' => $value ?? '',
+                        'type' => is_numeric($value) ? 'number' : 'text',
+                        'group' => 'general',
+                    ]);
+                }
             }
+        }
+
+        // Clear all settings cache
+        $allSettings = Setting::all();
+        foreach ($allSettings as $s) {
+            Cache::forget("setting.{$s->key}");
         }
 
         return back()->with('success', 'Settings updated successfully!');
