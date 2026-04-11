@@ -95,7 +95,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Reward Amount ({{ currency_symbol() }}) *</label>
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
-                        <input type="number" name="reward_amount" value="{{ old('reward_amount') }}" min="1" step="0.01" required
+                        <input type="number" name="reward_amount" value="{{ old('reward_amount') }}" min="0.01" step="0.01" required
                             class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                             placeholder="10.00">
                     </div>

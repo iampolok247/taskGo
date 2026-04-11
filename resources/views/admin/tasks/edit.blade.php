@@ -48,7 +48,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Reward ({{ currency_symbol() }}) <span class="text-red-500">*</span></label>
-                    <input type="number" name="reward" value="{{ old('reward', $task->reward) }}" step="0.01" min="1" required 
+                    <input type="number" name="reward" value="{{ old('reward', $task->reward) }}" step="0.01" min="0.01" required 
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('reward') border-red-500 @enderror">
                     @error('reward')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
