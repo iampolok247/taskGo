@@ -20,6 +20,23 @@
     <!-- Form -->
     <form action="{{ route('admin.tasks.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
+
+        <!-- Show All Errors -->
+        @if($errors->any())
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-red-700">Please fix the following errors:</span>
+                </div>
+                <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         
         <!-- Basic Info -->
         <div class="bg-white rounded-xl p-6 shadow-sm">
@@ -43,8 +60,8 @@
                         <option value="social" {{ old('category') == 'social' ? 'selected' : '' }}>Social Media</option>
                         <option value="survey" {{ old('category') == 'survey' ? 'selected' : '' }}>Survey</option>
                         <option value="video" {{ old('category') == 'video' ? 'selected' : '' }}>Video</option>
-                        <option value="download" {{ old('category') == 'download' ? 'selected' : '' }}>Download</option>
-                        <option value="signup" {{ old('category') == 'signup' ? 'selected' : '' }}>Signup</option>
+                        <option value="app" {{ old('category') == 'app' ? 'selected' : '' }}>App / Download</option>
+                        <option value="website" {{ old('category') == 'website' ? 'selected' : '' }}>Website / Signup</option>
                         <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
                     </select>
                     @error('category')
@@ -55,11 +72,34 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Proof Type *</label>
                     <select name="proof_type" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                        <option value="image" {{ old('proof_type') == 'image' ? 'selected' : '' }}>Screenshot Only</option>
+                        <option value="image" {{ old('proof_type', 'image') == 'image' ? 'selected' : '' }}>Screenshot Only</option>
                         <option value="url" {{ old('proof_type') == 'url' ? 'selected' : '' }}>URL Only</option>
                         <option value="both" {{ old('proof_type') == 'both' ? 'selected' : '' }}>Both URL & Screenshot</option>
                     </select>
                     @error('proof_type')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Difficulty *</label>
+                    <select name="difficulty" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <option value="easy" {{ old('difficulty', 'easy') == 'easy' ? 'selected' : '' }}>Easy</option>
+                        <option value="medium" {{ old('difficulty') == 'medium' ? 'selected' : '' }}>Medium</option>
+                        <option value="hard" {{ old('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
+                    </select>
+                    @error('difficulty')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+                    <select name="status" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                    @error('status')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -95,21 +135,31 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Reward Amount ({{ currency_symbol() }}) *</label>
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">{{ currency_symbol() }}</span>
-                        <input type="number" name="reward_amount" value="{{ old('reward_amount') }}" min="0.01" step="0.01" required
+                        <input type="number" name="reward" value="{{ old('reward') }}" min="0.01" step="0.01" required
                             class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                             placeholder="10.00">
                     </div>
-                    @error('reward_amount')
+                    @error('reward')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Submissions *</label>
-                    <input type="number" name="max_submissions" value="{{ old('max_submissions', 100) }}" min="1" required
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Daily Limit (0 = unlimited)</label>
+                    <input type="number" name="daily_limit" value="{{ old('daily_limit', 0) }}" min="0"
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                        placeholder="100">
-                    @error('max_submissions')
+                        placeholder="0">
+                    @error('daily_limit')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Limit (0 = unlimited)</label>
+                    <input type="number" name="total_limit" value="{{ old('total_limit', 0) }}" min="0"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="0">
+                    @error('total_limit')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -123,6 +173,25 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Priority (0 = normal)</label>
+                    <input type="number" name="priority" value="{{ old('priority', 0) }}" min="0"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="0">
+                    @error('priority')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Expires At</label>
+                    <input type="datetime-local" name="expires_at" value="{{ old('expires_at') }}"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    @error('expires_at')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </div>
 
@@ -133,10 +202,20 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Task URL</label>
-                    <input type="url" name="url" value="{{ old('url') }}"
+                    <input type="url" name="task_url" value="{{ old('task_url') }}"
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         placeholder="https://example.com">
-                    @error('url')
+                    @error('task_url')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Proof Instructions</label>
+                    <textarea name="proof_instructions" rows="2"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                        placeholder="E.g. Take a screenshot showing your username">{{ old('proof_instructions') }}</textarea>
+                    @error('proof_instructions')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -150,31 +229,6 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-        </div>
-
-        <!-- Settings -->
-        <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Settings</h3>
-            
-            <div class="space-y-4">
-                <label class="flex items-center gap-3">
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
-                        class="w-5 h-5 rounded text-primary-500 focus:ring-primary-500">
-                    <div>
-                        <span class="font-medium text-gray-900">Active</span>
-                        <p class="text-sm text-gray-500">Task will be visible to users immediately</p>
-                    </div>
-                </label>
-                
-                <label class="flex items-center gap-3">
-                    <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}
-                        class="w-5 h-5 rounded text-primary-500 focus:ring-primary-500">
-                    <div>
-                        <span class="font-medium text-gray-900">Featured</span>
-                        <p class="text-sm text-gray-500">Show this task at the top of the list</p>
-                    </div>
-                </label>
             </div>
         </div>
 
