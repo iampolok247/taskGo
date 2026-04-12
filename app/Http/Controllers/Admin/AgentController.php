@@ -122,4 +122,19 @@ class AgentController extends Controller
 
         return back()->with('success', 'Password reset successfully!');
     }
+
+    public function destroy(Agent $agent)
+    {
+        // Detach users from this agent (set their agent_id to null)
+        $agent->users()->update(['agent_id' => null]);
+
+        // Delete related commissions
+        $agent->commissions()->delete();
+
+        // Delete the agent
+        $agent->delete();
+
+        return redirect()->route('admin.agents.index')
+            ->with('success', 'Agent "' . $agent->name . '" has been deleted successfully.');
+    }
 }

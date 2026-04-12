@@ -191,6 +191,7 @@ Route::middleware(['auth:admin', 'admin'])->prefix('admin')->name('admin.')->gro
     Route::put('/agents/{agent}', [AgentController::class, 'update'])->name('agents.update');
     Route::post('/agents/{agent}/toggle-status', [AgentController::class, 'toggleStatus'])->name('agents.toggle-status');
     Route::post('/agents/{agent}/reset-password', [AgentController::class, 'resetPassword'])->name('agents.reset-password');
+    Route::delete('/agents/{agent}', [AgentController::class, 'destroy'])->name('agents.destroy');
 
     // Tasks
     Route::get('/tasks', [AdminTaskController::class, 'index'])->name('tasks.index');
