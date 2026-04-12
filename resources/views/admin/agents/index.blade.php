@@ -97,7 +97,7 @@
                                     </svg>
                                 </a>
                                 <form action="{{ route('admin.agents.toggle-status', $agent) }}" method="POST" class="inline"
-                                    onsubmit="return confirm('{{ $agent->status === \'active\' ? 'Block' : 'Activate' }} agent {{ $agent->name }}?')">
+                                    onsubmit="return confirm('{{ $agent->status === "active" ? "Block" : "Activate" }} agent {{ $agent->name }}?')">
                                     @csrf
                                     <button type="submit" class="{{ $agent->status === 'active' ? 'text-yellow-500 hover:text-yellow-700' : 'text-green-500 hover:text-green-700' }}" title="{{ $agent->status === 'active' ? 'Block Agent' : 'Activate Agent' }}">
                                         @if($agent->status === 'active')
