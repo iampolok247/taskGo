@@ -15,7 +15,7 @@
         <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-blue-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Users</p>
+                    <p class="text-sm text-gray-500">Total Freelancers</p>
                     <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['total_users']) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -30,7 +30,7 @@
         <div class="bg-white rounded-xl p-5 shadow-sm border-l-4 border-green-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Agents</p>
+                    <p class="text-sm text-gray-500">Total Leaders</p>
                     <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['total_agents']) }}</p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">

@@ -54,7 +54,7 @@ class AgentController extends Controller
         $agent = Agent::create($validated);
 
         return redirect()->route('admin.agents.index')
-            ->with('success', 'Agent created successfully! Agent Code: ' . $agent->agent_code);
+            ->with('success', 'Leader created successfully! Leader Code: ' . $agent->agent_code);
     }
 
     public function show(Agent $agent)
@@ -99,7 +99,7 @@ class AgentController extends Controller
         $agent->update($validated);
 
         return redirect()->route('admin.agents.show', $agent)
-            ->with('success', 'Agent updated successfully!');
+            ->with('success', 'Leader updated successfully!');
     }
 
     public function toggleStatus(Agent $agent)
@@ -107,7 +107,7 @@ class AgentController extends Controller
         $newStatus = $agent->status === 'active' ? 'blocked' : 'active';
         $agent->update(['status' => $newStatus]);
 
-        return back()->with('success', 'Agent status updated to ' . $newStatus);
+        return back()->with('success', 'Leader status updated to ' . $newStatus);
     }
 
     public function resetPassword(Request $request, Agent $agent)
@@ -135,6 +135,6 @@ class AgentController extends Controller
         $agent->delete();
 
         return redirect()->route('admin.agents.index')
-            ->with('success', 'Agent "' . $agent->name . '" has been deleted successfully.');
+            ->with('success', 'Leader "' . $agent->name . '" has been deleted successfully.');
     }
 }

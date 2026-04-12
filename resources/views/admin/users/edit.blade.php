@@ -12,7 +12,7 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Edit User</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Edit Freelancer</h1>
             <p class="text-gray-500">{{ $user->email }}</p>
         </div>
     </div>
@@ -61,10 +61,10 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Assigned Agent</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Assigned Leader</label>
                 <select name="agent_id" 
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                    <option value="">No Agent (Direct)</option>
+                    <option value="">No Leader (Direct)</option>
                     @foreach($agents as $agent)
                         <option value="{{ $agent->id }}" {{ $user->agent_id == $agent->id ? 'selected' : '' }}>
                             {{ $agent->name }} ({{ $agent->email }})
@@ -88,12 +88,12 @@
     <div class="bg-white rounded-xl shadow-sm border border-red-200">
         <div class="p-6">
             <h3 class="font-semibold text-red-600 mb-2">Danger Zone</h3>
-            <p class="text-gray-500 text-sm mb-4">Once you block a user, they will not be able to access their account.</p>
+            <p class="text-gray-500 text-sm mb-4">Once you block a freelancer, they will not be able to access their account.</p>
             <form action="{{ route('admin.users.toggle-status', $user) }}" method="POST" class="inline">
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="px-4 py-2 {{ $user->status === 'blocked' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700' }} text-white font-medium rounded-xl transition-all">
-                    {{ $user->status === 'blocked' ? 'Unblock User' : 'Block User' }}
+                    {{ $user->status === 'blocked' ? 'Unblock Freelancer' : 'Block Freelancer' }}
                 </button>
             </form>
         </div>

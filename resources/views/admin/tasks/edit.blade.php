@@ -113,7 +113,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Proof Instructions</label>
                     <textarea name="proof_instructions" rows="2" 
                         class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                        placeholder="What proof should users submit?">{{ old('proof_instructions', $task->proof_instructions) }}</textarea>
+                        placeholder="What proof should freelancers submit?">{{ old('proof_instructions', $task->proof_instructions) }}</textarea>
                 </div>
 
                 <div>

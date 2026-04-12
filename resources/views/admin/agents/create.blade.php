@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Add Agent')
+@section('title', 'Add Leader')
 
 @section('content')
 <div class="space-y-6 max-w-2xl">
@@ -12,8 +12,8 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Add New Agent</h1>
-            <p class="text-gray-500">Create a new agent account</p>
+            <h1 class="text-2xl font-bold text-gray-900">Add New Leader</h1>
+            <p class="text-gray-500">Create a new leader account</p>
         </div>
     </div>
 
@@ -78,7 +78,7 @@
                 <input type="number" name="commission_rate" value="{{ old('commission_rate', 5) }}" step="0.01" min="0" max="100" required 
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('commission_rate') border-red-500 @enderror"
                     placeholder="e.g., 5">
-                <p class="mt-1 text-sm text-gray-500">Percentage of user deposits the agent will earn as commission</p>
+                <p class="mt-1 text-sm text-gray-500">Percentage of freelancer deposits the leader will earn as commission</p>
                 @error('commission_rate')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -99,7 +99,7 @@
                     Cancel
                 </a>
                 <button type="submit" class="px-6 py-3 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-all">
-                    Create Agent
+                    Create Leader
                 </button>
             </div>
         </form>

@@ -110,7 +110,7 @@
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">User</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Freelancer</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Submitted</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium text-gray-500">Action</th>
@@ -124,7 +124,7 @@
                                         <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
                                             <span class="text-xs font-bold">{{ strtoupper(substr($submission->user->name ?? 'U', 0, 1)) }}</span>
                                         </div>
-                                        <span class="font-medium">{{ $submission->user->name ?? 'User' }}</span>
+                                        <span class="font-medium">{{ $submission->user->name ?? 'Freelancer' }}</span>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3">
@@ -199,7 +199,7 @@
             <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold text-gray-900 mb-4">Earnings Paid</h3>
                 <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white">
-                    <p class="text-sm opacity-90">Total Paid to Users</p>
+                    <p class="text-sm opacity-90">Total Paid to Freelancers</p>
                     <p class="text-2xl font-bold">{{ format_currency($task->approved_submissions_count * $task->reward, 2) }}</p>
                 </div>
             </div>

@@ -82,7 +82,7 @@ class UserController extends Controller
         $user->update($validated);
 
         return redirect()->route('admin.users.show', $user)
-            ->with('success', 'User updated successfully!');
+            ->with('success', 'Freelancer updated successfully!');
     }
 
     public function toggleStatus(User $user)
@@ -90,7 +90,7 @@ class UserController extends Controller
         $newStatus = $user->status === 'active' ? 'blocked' : 'active';
         $user->update(['status' => $newStatus]);
 
-        return back()->with('success', 'User status updated to ' . $newStatus);
+        return back()->with('success', 'Freelancer status updated to ' . $newStatus);
     }
 
     public function adjustBalance(Request $request, User $user)
@@ -158,6 +158,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('success', "User '{$userName}' has been permanently deleted.");
+            ->with('success', "Freelancer '{$userName}' has been permanently deleted.");
     }
 }

@@ -1,20 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Agents')
+@section('title', 'Manage Leaders')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Manage Agents</h1>
-            <p class="text-gray-500">View and manage all agents</p>
+            <h1 class="text-2xl font-bold text-gray-900">Manage Leaders</h1>
+            <p class="text-gray-500">View and manage all leaders</p>
         </div>
         <a href="{{ route('admin.agents.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-medium rounded-xl hover:bg-primary-700 transition-all">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
-            Add Agent
+            Add Leader
         </a>
     </div>
 
@@ -43,9 +43,9 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Leader</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Freelancers</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
@@ -97,9 +97,9 @@
                                     </svg>
                                 </a>
                                 <form action="{{ route('admin.agents.toggle-status', $agent) }}" method="POST" class="inline"
-                                    onsubmit="return confirm('{{ $agent->status === "active" ? "Block" : "Activate" }} agent {{ $agent->name }}?')">
+                                    onsubmit="return confirm('{{ $agent->status === "active" ? "Block" : "Activate" }} leader {{ $agent->name }}?')">
                                     @csrf
-                                    <button type="submit" class="{{ $agent->status === 'active' ? 'text-yellow-500 hover:text-yellow-700' : 'text-green-500 hover:text-green-700' }}" title="{{ $agent->status === 'active' ? 'Block Agent' : 'Activate Agent' }}">
+                                    <button type="submit" class="{{ $agent->status === 'active' ? 'text-yellow-500 hover:text-yellow-700' : 'text-green-500 hover:text-green-700' }}" title="{{ $agent->status === 'active' ? 'Block Leader' : 'Activate Leader' }}">
                                         @if($agent->status === 'active')
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
@@ -112,7 +112,7 @@
                                     </button>
                                 </form>
                                 <form action="{{ route('admin.agents.destroy', $agent) }}" method="POST" 
-                                    onsubmit="return confirm('Are you sure you want to delete agent {{ $agent->name }}? Their users will be unlinked.')">
+                                    onsubmit="return confirm('Are you sure you want to delete leader {{ $agent->name }}? Their freelancers will be unlinked.')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700">
@@ -131,8 +131,8 @@
                                 <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
-                                <p class="font-medium">No agents found</p>
-                                <p class="text-sm">Get started by creating a new agent.</p>
+                                <p class="font-medium">No leaders found</p>
+                                <p class="text-sm">Get started by creating a new leader.</p>
                             </div>
                         </td>
                     </tr>

@@ -36,7 +36,7 @@
     <div class="bg-white rounded-xl p-4 shadow-sm">
         <form action="{{ route('admin.submissions.index') }}" method="GET" class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by user name or task..." 
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by freelancer name or task..." 
                     class="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
             </div>
             <select name="status" class="border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -63,7 +63,7 @@
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Freelancer</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reward</th>
                         <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -80,7 +80,7 @@
                                     <span class="font-bold text-white">{{ strtoupper(substr($submission->user->name ?? 'U', 0, 1)) }}</span>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-900">{{ $submission->user->name ?? 'User' }}</p>
+                                    <p class="font-medium text-gray-900">{{ $submission->user->name ?? 'Freelancer' }}</p>
                                     <p class="text-sm text-gray-500">{{ $submission->user->email ?? '' }}</p>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                                 <p class="font-medium">No submissions found</p>
-                                <p class="text-sm">Submissions will appear here when users complete tasks.</p>
+                                <p class="text-sm">Submissions will appear here when freelancers complete tasks.</p>
                             </div>
                         </td>
                     </tr>

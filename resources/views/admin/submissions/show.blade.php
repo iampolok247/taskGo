@@ -48,7 +48,7 @@
 
                 @if($submission->proof_text)
                 <div class="p-4 bg-gray-50 rounded-xl">
-                    <p class="text-sm text-gray-500 mb-1">User Notes:</p>
+                    <p class="text-sm text-gray-500 mb-1">Freelancer Notes:</p>
                     <p class="text-gray-700">{{ $submission->proof_text }}</p>
                 </div>
                 @endif
@@ -123,7 +123,7 @@
                         </svg>
                         <div>
                             <p class="font-medium text-green-800">Approved</p>
-                            <p class="text-sm text-green-700">Reward of {{ format_currency($submission->reward_amount, 2) }} was credited to user's wallet.</p>
+                            <p class="text-sm text-green-700">Reward of {{ format_currency($submission->reward_amount, 2) }} was credited to freelancer's wallet.</p>
                         </div>
                         @else
                         <svg class="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,9 +149,9 @@
 
         <!-- Sidebar -->
         <div class="space-y-6">
-            <!-- User Info -->
+            <!-- Freelancer Info -->
             <div class="bg-white rounded-xl p-6 shadow-sm">
-                <h3 class="font-semibold text-gray-900 mb-4">User Information</h3>
+                <h3 class="font-semibold text-gray-900 mb-4">Freelancer Information</h3>
                 @if($submission->user)
                 <div class="flex items-center gap-4 mb-4">
                     <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
@@ -163,10 +163,10 @@
                     </div>
                 </div>
                 <a href="{{ route('admin.users.show', $submission->user) }}" class="block text-center py-2 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all">
-                    View User Profile
+                    View Freelancer Profile
                 </a>
                 @else
-                <p class="text-gray-500">User information not available</p>
+                <p class="text-gray-500">Freelancer information not available</p>
                 @endif
             </div>
 

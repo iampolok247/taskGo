@@ -12,7 +12,7 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Edit Agent</h1>
+            <h1 class="text-2xl font-bold text-gray-900">Edit Leader</h1>
             <p class="text-gray-500">{{ $agent->email }}</p>
         </div>
     </div>
@@ -122,12 +122,12 @@
     <div class="bg-white rounded-xl shadow-sm border border-red-200">
         <div class="p-6">
             <h3 class="font-semibold text-red-600 mb-2">Danger Zone</h3>
-            <p class="text-gray-500 text-sm mb-4">Once you block an agent, they will not be able to access their account.</p>
+            <p class="text-gray-500 text-sm mb-4">Once you block a leader, they will not be able to access their account.</p>
             <form action="{{ route('admin.agents.toggle-status', $agent) }}" method="POST" class="inline">
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="px-4 py-2 {{ $agent->status === 'blocked' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700' }} text-white font-medium rounded-xl transition-all">
-                    {{ $agent->status === 'blocked' ? 'Unblock Agent' : 'Block Agent' }}
+                    {{ $agent->status === 'blocked' ? 'Unblock Leader' : 'Block Leader' }}
                 </button>
             </form>
         </div>

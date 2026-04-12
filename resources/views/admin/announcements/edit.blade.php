@@ -57,9 +57,9 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Target Audience <span class="text-red-500">*</span></label>
                     <select name="target" required class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                        <option value="all" {{ $announcement->target === 'all' ? 'selected' : '' }}>All (Users & Agents)</option>
-                        <option value="users" {{ $announcement->target === 'users' ? 'selected' : '' }}>Users Only</option>
-                        <option value="agents" {{ $announcement->target === 'agents' ? 'selected' : '' }}>Agents Only</option>
+                        <option value="all" {{ $announcement->target === 'all' ? 'selected' : '' }}>All (Freelancers & Leaders)</option>
+                        <option value="users" {{ $announcement->target === 'users' ? 'selected' : '' }}>Freelancers Only</option>
+                        <option value="agents" {{ $announcement->target === 'agents' ? 'selected' : '' }}>Leaders Only</option>
                     </select>
                 </div>
             </div>

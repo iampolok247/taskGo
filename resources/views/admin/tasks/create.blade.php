@@ -13,7 +13,7 @@
         </a>
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Create New Task</h1>
-            <p class="text-gray-500">Add a new task for users to complete</p>
+            <p class="text-gray-500">Add a new task for freelancers to complete</p>
         </div>
     </div>
 
@@ -108,7 +108,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
                     <textarea name="description" rows="3" required
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                        placeholder="Describe what users need to do">{{ old('description') }}</textarea>
+                        placeholder="Describe what freelancers need to do">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

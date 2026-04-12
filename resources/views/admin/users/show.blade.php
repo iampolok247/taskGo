@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'User: ' . $user->name)
+@section('title', 'Freelancer: ' . $user->name)
 
 @section('content')
 <div class="space-y-6">
@@ -28,17 +28,17 @@
                 @csrf
                 @method('PATCH')
                 <button type="submit" class="px-4 py-2 {{ $user->status === 'active' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white font-medium rounded-xl transition-all">
-                    {{ $user->status === 'active' ? 'Block User' : 'Activate User' }}
+                    {{ $user->status === 'active' ? 'Block Freelancer' : 'Activate Freelancer' }}
                 </button>
             </form>
-            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this user? This will remove all their data permanently.');">
+            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this freelancer? This will remove all their data permanently.');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-all">
                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
-                    Delete User
+                    Delete Freelancer
                 </button>
             </form>
         </div>
@@ -71,7 +71,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- User Info Card -->
         <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="font-semibold text-gray-900 mb-4">User Information</h3>
+            <h3 class="font-semibold text-gray-900 mb-4">Freelancer Information</h3>
             <div class="space-y-4">
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
@@ -99,7 +99,7 @@
                         <span class="font-mono text-primary-600">{{ $user->referral_code }}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Agent</span>
+                        <span class="text-gray-500">Leader</span>
                         <span class="font-medium">{{ $user->agent->name ?? 'Direct' }}</span>
                     </div>
                     <div class="flex justify-between">
