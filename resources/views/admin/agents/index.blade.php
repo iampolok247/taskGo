@@ -96,6 +96,21 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                 </a>
+                                <form action="{{ route('admin.agents.toggle-status', $agent) }}" method="POST" class="inline"
+                                    onsubmit="return confirm('{{ $agent->status === \'active\' ? 'Block' : 'Activate' }} agent {{ $agent->name }}?')">
+                                    @csrf
+                                    <button type="submit" class="{{ $agent->status === 'active' ? 'text-yellow-500 hover:text-yellow-700' : 'text-green-500 hover:text-green-700' }}" title="{{ $agent->status === 'active' ? 'Block Agent' : 'Activate Agent' }}">
+                                        @if($agent->status === 'active')
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                            </svg>
+                                        @else
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </form>
                                 <form action="{{ route('admin.agents.destroy', $agent) }}" method="POST" 
                                     onsubmit="return confirm('Are you sure you want to delete agent {{ $agent->name }}? Their users will be unlinked.')">
                                     @csrf
