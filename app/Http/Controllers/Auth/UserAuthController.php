@@ -81,6 +81,9 @@ class UserAuthController extends Controller
                 'referred_id' => $user->id,
                 'status' => 'pending',
             ]);
+
+            // Increment referrer's total referral count immediately
+            User::where('id', $referrerId)->increment('total_referrals');
         }
 
         Auth::login($user);

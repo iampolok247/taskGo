@@ -7,7 +7,7 @@
     <!-- Welcome Header -->
     <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white">
         <h1 class="text-2xl font-bold mb-2">Welcome back, {{ auth('agent')->user()->name }}!</h1>
-        <p class="text-emerald-100">Here's your agent performance overview</p>
+        <p class="text-emerald-100">Here's your leader performance overview</p>
     </div>
 
     <!-- Stats Grid -->
@@ -15,7 +15,7 @@
         <div class="bg-white rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Users</p>
+                    <p class="text-sm text-gray-500">Total Freelancers</p>
                     <p class="text-2xl font-bold text-gray-900">{{ $stats['total_users'] }}</p>
                 </div>
                 <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -54,7 +54,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 mt-2">{{ $stats['month_users'] }} new users</p>
+            <p class="text-xs text-gray-500 mt-2">{{ $stats['month_users'] }} new freelancers</p>
         </div>
 
         <div class="bg-white rounded-xl p-5 shadow-sm">
@@ -69,7 +69,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 mt-2">Per user task completion</p>
+            <p class="text-xs text-gray-500 mt-2">Per freelancer task completion</p>
         </div>
     </div>
 
@@ -82,8 +82,8 @@
                 </svg>
             </div>
             <div>
-                <h3 class="font-semibold text-gray-900">Create New User</h3>
-                <p class="text-sm text-gray-500">Register a new user under your agency</p>
+                <h3 class="font-semibold text-gray-900">Create New Freelancer</h3>
+                <p class="text-sm text-gray-500">Register a new freelancer under your leadership</p>
             </div>
         </a>
         
@@ -94,8 +94,8 @@
                 </svg>
             </div>
             <div>
-                <h3 class="font-semibold text-gray-900">Manage Users</h3>
-                <p class="text-sm text-gray-500">View and manage your registered users</p>
+                <h3 class="font-semibold text-gray-900">Manage Freelancers</h3>
+                <p class="text-sm text-gray-500">View and manage your registered freelancers</p>
             </div>
         </a>
     </div>
@@ -106,7 +106,7 @@
         <div class="bg-white rounded-xl shadow-sm">
             <div class="p-4 border-b border-gray-100">
                 <div class="flex items-center justify-between">
-                    <h3 class="font-semibold text-gray-900">Recent Users</h3>
+                    <h3 class="font-semibold text-gray-900">Recent Freelancers</h3>
                     <a href="{{ route('agent.users.index') }}" class="text-sm text-emerald-600 font-medium">View All</a>
                 </div>
             </div>
@@ -131,7 +131,7 @@
                     </div>
                 @empty
                     <div class="p-8 text-center">
-                        <p class="text-gray-500">No users yet</p>
+                        <p class="text-gray-500">No freelancers yet</p>
                     </div>
                 @endforelse
             </div>

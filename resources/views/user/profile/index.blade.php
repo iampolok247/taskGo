@@ -149,7 +149,7 @@
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                    <p class="text-sm font-medium text-gray-900">User ID</p>
+                    <p class="text-sm font-medium text-gray-900">Freelancer ID</p>
                     <p class="text-xs text-gray-500">#{{ $user->id }}</p>
                 </div>
             </div>

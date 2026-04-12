@@ -69,7 +69,7 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('agent.users.index')
-            ->with('success', 'User created successfully!');
+            ->with('success', 'Freelancer created successfully!');
     }
 
     public function show(User $user)

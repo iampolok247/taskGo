@@ -1,6 +1,6 @@
 @extends('layouts.agent')
 
-@section('title', 'User: ' . $user->name)
+@section('title', 'Freelancer: ' . $user->name)
 
 @section('content')
 <div class="space-y-6">
@@ -49,7 +49,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- User Info Card -->
         <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="font-semibold text-gray-900 mb-4">User Information</h3>
+            <h3 class="font-semibold text-gray-900 mb-4">Freelancer Information</h3>
             <div class="space-y-4">
                 <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center">
@@ -121,13 +121,13 @@
 
         <!-- Commission Earned -->
         <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="font-semibold text-gray-900 mb-4">Your Earnings from User</h3>
+            <h3 class="font-semibold text-gray-900 mb-4">Your Earnings from Freelancer</h3>
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white text-center">
                 <p class="text-sm opacity-90 mb-1">Total Commission Earned</p>
                 <p class="text-3xl font-bold">{{ format_currency($commissionEarned, 2) }}</p>
             </div>
             <div class="mt-4 text-center">
-                <p class="text-sm text-gray-500">Commission is earned when this user makes deposits.</p>
+                <p class="text-sm text-gray-500">Commission is earned when this freelancer makes deposits.</p>
             </div>
         </div>
     </div>

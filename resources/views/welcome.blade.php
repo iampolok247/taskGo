@@ -47,7 +47,7 @@
                         <span class="text-yellow-300">Earn Money!</span>
                     </h1>
                     <p class="text-purple-100 text-lg mb-8 max-w-md mx-auto lg:mx-0">
-                        Join thousands of users earning daily rewards by completing simple tasks. 
+                        Join thousands of freelancers earning daily rewards by completing simple tasks. 
                         Start your journey to financial freedom today!
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -63,7 +63,7 @@
                     <div class="flex justify-center lg:justify-start gap-8 mt-12">
                         <div class="text-center">
                             <div class="text-3xl font-bold text-white">10K+</div>
-                            <div class="text-purple-200 text-sm">Active Users</div>
+                            <div class="text-purple-200 text-sm">Active Freelancers</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl font-bold text-white">$50K+</div>

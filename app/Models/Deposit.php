@@ -221,7 +221,6 @@ class Deposit extends Model
         // Add bonus to referrer's wallet
         $referrer = User::find($user->referred_by);
         $referrer->wallet->addToMain($bonusAmount);
-        $referrer->increment('total_referrals');
 
         // Create transaction for referrer
         Transaction::create([

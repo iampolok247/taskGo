@@ -7,7 +7,7 @@
     <!-- Header -->
     <div>
         <h1 class="text-2xl font-bold text-gray-900">My Commissions</h1>
-        <p class="text-gray-500">Track your earnings from user activity</p>
+        <p class="text-gray-500">Track your earnings from freelancer activity</p>
     </div>
 
     <!-- Stats -->
@@ -98,7 +98,7 @@
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Freelancer</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>

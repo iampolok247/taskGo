@@ -24,7 +24,7 @@
             </div>
             <div class="w-px h-8 bg-white/20"></div>
             <div>
-                <p class="text-purple-200">Active Users</p>
+                <p class="text-purple-200">Active Freelancers</p>
                 <p class="font-semibold text-xl">{{ $activeReferrals }}</p>
             </div>
         </div>
@@ -111,7 +111,7 @@
                             <span class="text-purple-600 font-bold text-sm">{{ strtoupper(substr($referral->referredUser->name ?? 'U', 0, 2)) }}</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900">{{ $referral->referredUser->name ?? 'Unknown User' }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ $referral->referredUser->name ?? 'Unknown Freelancer' }}</p>
                             <p class="text-xs text-gray-500">Joined {{ $referral->created_at->format('M d, Y') }}</p>
                         </div>
                         <div class="text-right">

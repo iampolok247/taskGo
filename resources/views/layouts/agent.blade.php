@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <title>@yield('title', 'Agent Panel') - TaskGo</title>
+    <title>@yield('title', 'Leader Panel') - TaskGo</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -91,7 +91,7 @@
                 </button>
 
                 <!-- Title -->
-                <h1 class="text-lg font-semibold">@yield('title', 'Agent Panel')</h1>
+                <h1 class="text-lg font-semibold">@yield('title', 'Leader Panel')</h1>
 
                 <!-- Notification -->
                 <a href="{{ route('agent.profile.notifications') }}" class="p-2 -mr-2 rounded-lg hover:bg-white/10 transition relative">
@@ -112,7 +112,7 @@
                 <!-- Logo -->
                 <div class="flex items-center gap-3 mb-4">
                     <img src="https://i.ibb.co.com/wNSGPL3W/taskgo-logo.png" alt="TaskGo" class="h-10 w-auto">
-                    <span class="text-xl font-bold">TaskGo Agent</span>
+                    <span class="text-xl font-bold">TaskGo Leader</span>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center text-xl font-bold">
@@ -143,7 +143,7 @@
                     <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
-                    <span class="font-medium">Users</span>
+                    <span class="font-medium">Freelancers</span>
                 </a>
 
                 <a href="{{ route('agent.commissions.index') }}" class="menu-item flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 {{ request()->routeIs('agent.commissions.*') ? 'active' : '' }}">

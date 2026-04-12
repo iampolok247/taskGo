@@ -1,6 +1,6 @@
 @extends('layouts.agent')
 
-@section('title', 'Create User')
+@section('title', 'Create Freelancer')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
@@ -12,8 +12,8 @@
             </svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Create New User</h1>
-            <p class="text-gray-500">Register a new user under your agency</p>
+            <h1 class="text-2xl font-bold text-gray-900">Create New Freelancer</h1>
+            <p class="text-gray-500">Register a new freelancer under your leadership</p>
         </div>
     </div>
 
@@ -103,14 +103,14 @@
                     </svg>
                     <div>
                         <p class="text-sm font-medium text-emerald-800">Commission Information</p>
-                        <p class="text-sm text-emerald-600 mt-1">You will earn {{ auth('agent')->user()->commission_rate }}% commission on every task completed by this user.</p>
+                        <p class="text-sm text-emerald-600 mt-1">You will earn {{ auth('agent')->user()->commission_rate }}% commission on every task completed by this freelancer.</p>
                     </div>
                 </div>
             </div>
             
             <div class="flex gap-4">
                 <button type="submit" class="flex-1 py-3 bg-emerald-500 text-white font-semibold rounded-xl hover:bg-emerald-600 transition-all">
-                    Create User
+                    Create Freelancer
                 </button>
                 <a href="{{ route('agent.users.index') }}" class="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all">
                     Cancel

@@ -1,35 +1,35 @@
 @extends('layouts.agent')
 
-@section('title', 'My Users')
+@section('title', 'My Freelancers')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">My Users</h1>
-            <p class="text-gray-500">Manage users registered under your agency</p>
+            <h1 class="text-2xl font-bold text-gray-900">My Freelancers</h1>
+            <p class="text-gray-500">Manage freelancers registered under your leadership</p>
         </div>
         <a href="{{ route('agent.users.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-all">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
-            Create User
+            Create Freelancer
         </a>
     </div>
 
     <!-- Stats -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl p-4 shadow-sm">
-            <p class="text-sm text-gray-500">Total Users</p>
+            <p class="text-sm text-gray-500">Total Freelancers</p>
             <p class="text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
-            <p class="text-sm text-gray-500">Active Users</p>
+            <p class="text-sm text-gray-500">Active Freelancers</p>
             <p class="text-2xl font-bold text-green-600">{{ $stats['active'] }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
-            <p class="text-sm text-gray-500">Inactive Users</p>
+            <p class="text-sm text-gray-500">Inactive Freelancers</p>
             <p class="text-2xl font-bold text-gray-400">{{ $stats['inactive'] }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 shadow-sm">
@@ -65,7 +65,7 @@
                 <table class="w-full">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Freelancer</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Earnings</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tasks</th>
@@ -165,10 +165,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">No Users Found</h3>
-            <p class="text-gray-500 mb-4">Start by creating your first user.</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">No Freelancers Found</h3>
+            <p class="text-gray-500 mb-4">Start by creating your first freelancer.</p>
             <a href="{{ route('agent.users.create') }}" class="inline-flex items-center px-4 py-2 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-all">
-                Create First User
+                Create First Freelancer
             </a>
         </div>
     @endif

@@ -121,7 +121,7 @@
                 <span class="text-xs text-gray-500 font-medium">Referrals</span>
             </div>
             <p class="text-xl font-bold text-gray-900">{{ $stats['total_referrals'] ?? 0 }}</p>
-            <p class="text-xs text-purple-600 mt-1">Active users</p>
+            <p class="text-xs text-purple-600 mt-1">Active freelancers</p>
         </div>
     </div>
 
