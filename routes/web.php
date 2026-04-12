@@ -56,10 +56,13 @@ Route::get('/', function () {
 })->name('home');
 
 // ==================== USER AUTHENTICATION ====================
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
+// Login form - accessible always (for role tab switching)
+Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
+Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
+
+// Login/Register POST - only for guests
+Route::middleware('guest:web')->group(function () {
     Route::post('/login', [UserAuthController::class, 'login']);
-    Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [UserAuthController::class, 'register']);
 });
 
@@ -107,8 +110,11 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
 
 // ==================== AGENT AUTHENTICATION ====================
 Route::prefix('agent')->name('agent.')->group(function () {
+    // Login form - accessible always (for role tab switching)
+    Route::get('/login', [AgentAuthController::class, 'showLoginForm'])->name('login');
+
+    // Login POST - only for guests
     Route::middleware('guest:agent')->group(function () {
-        Route::get('/login', [AgentAuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AgentAuthController::class, 'login']);
     });
 
@@ -151,8 +157,11 @@ Route::middleware(['auth:agent', 'agent'])->prefix('agent')->name('agent.')->gro
 
 // ==================== ADMIN AUTHENTICATION ====================
 Route::prefix('admin')->name('admin.')->group(function () {
+    // Login form - accessible always (for role tab switching)
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+
+    // Login POST - only for guests
     Route::middleware('guest:admin')->group(function () {
-        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AdminAuthController::class, 'login']);
     });
 

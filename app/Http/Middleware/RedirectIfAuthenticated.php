@@ -15,6 +15,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // Only redirect if the user is authenticated for THIS specific guard
                 return match($guard) {
                     'admin' => redirect()->route('admin.dashboard'),
                     'agent' => redirect()->route('agent.dashboard'),

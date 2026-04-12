@@ -16,6 +16,17 @@ return Application::configure(basePath: dirname(__DIR__))
             'agent' => \App\Http\Middleware\AgentMiddleware::class,
             'user' => \App\Http\Middleware\UserMiddleware::class,
         ]);
+
+        // Redirect unauthenticated users to the correct login page based on guard
+        $middleware->redirectGuestsTo(function ($request) {
+            if ($request->is('admin/*') || $request->routeIs('admin.*')) {
+                return route('admin.login');
+            }
+            if ($request->is('agent/*') || $request->routeIs('agent.*')) {
+                return route('agent.login');
+            }
+            return route('login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -3,6 +3,11 @@
 @section('title', 'Admin Login')
 
 @section('body')
+{{-- If already logged in as admin, redirect to dashboard --}}
+@auth('admin')
+<script>window.location.href = "{{ route('admin.dashboard') }}";</script>
+@endauth
+
 <div class="min-h-screen flex flex-col justify-center bg-gradient-to-br from-slate-50 to-slate-100 px-4 py-8 safe-area-top safe-area-bottom">
     <div class="w-full max-w-md mx-auto">
         <!-- Logo -->
