@@ -73,6 +73,43 @@
         </div>
     </div>
 
+    <!-- Referral Code Section -->
+    <div class="bg-white rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold text-gray-900">Your Referral Code</h3>
+            <div class="flex items-center gap-2 text-sm">
+                <span class="text-gray-500">Total Referrals:</span>
+                <span class="font-bold text-emerald-600">{{ $totalReferrals }}</span>
+                <span class="mx-1 text-gray-300">|</span>
+                <span class="text-gray-500">Referral Earnings:</span>
+                <span class="font-bold text-emerald-600">{{ format_currency($referralEarnings, 2) }}</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-emerald-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500 mb-1">Referral Code</p>
+                <div class="flex items-center justify-between">
+                    <p class="text-2xl font-bold text-emerald-600">{{ $agent->referral_code }}</p>
+                    <button onclick="navigator.clipboard.writeText('{{ $agent->referral_code }}').then(() => alert('Referral code copied!'))" 
+                        class="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600 transition-all">
+                        Copy
+                    </button>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+                <p class="text-sm text-gray-500 mb-1">Referral Link</p>
+                <div class="flex items-center gap-2">
+                    <input type="text" readonly value="{{ $referralLink }}" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 truncate">
+                    <button onclick="navigator.clipboard.writeText('{{ $referralLink }}').then(() => alert('Referral link copied!'))" 
+                        class="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600 transition-all whitespace-nowrap">
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-3">Share your referral code with new freelancers. You'll earn a signup bonus + commission on their deposits!</p>
+    </div>
+
     <!-- Quick Actions -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <a href="{{ route('agent.users.create') }}" class="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">

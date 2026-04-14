@@ -144,31 +144,45 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Signup Bonus (BDT)</label>
-                    <input type="number" name="referral_signup_bonus" value="{{ $settings['referral_signup_bonus'] ?? 10 }}" min="0" step="0.01"
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Minimum Deposit for Referral Bonus (BDT)</label>
+                    <input type="number" name="referral_min_deposit" value="{{ $settings['referral_min_deposit'] ?? 500 }}" min="0" step="0.01"
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-1">Bonus earned when a referred user signs up</p>
+                    <p class="text-xs text-gray-500 mt-1">Referred freelancer must deposit at least this amount before referrer gets the bonus</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Freelancer Referral Bonus (BDT)</label>
+                    <input type="number" name="referral_signup_bonus" value="{{ $settings['referral_signup_bonus'] ?? 500 }}" min="0" step="0.01"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Bonus a freelancer earns when their referred freelancer makes the minimum deposit</p>
                 </div>
                 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Task Commission (%)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Leader Direct Referral Bonus (BDT)</label>
+                    <input type="number" name="leader_direct_signup_bonus" value="{{ $settings['leader_direct_signup_bonus'] ?? 500 }}" min="0" step="0.01"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Bonus a leader earns when their referred freelancer makes the minimum deposit</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Leader Deposit Commission (%)</label>
                     <input type="number" name="referral_task_commission" value="{{ $settings['referral_task_commission'] ?? 5 }}" min="0" max="100" step="0.01"
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-1">Commission earned from referred user's task completions</p>
+                    <p class="text-xs text-gray-500 mt-1">Commission (%) leader earns from referred freelancer's every deposit</p>
                 </div>
             </div>
         </div>
 
-        <!-- Agent Settings -->
+        <!-- Leader Settings -->
         <div class="bg-white rounded-xl p-6 shadow-sm space-y-6 mt-6">
-            <h3 class="text-lg font-semibold text-gray-900">Agent Settings</h3>
+            <h3 class="text-lg font-semibold text-gray-900">Leader Settings</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Agent Commission (%)</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Default Leader Commission (%)</label>
                     <input type="number" name="default_agent_commission" value="{{ $settings['default_agent_commission'] ?? 10 }}" min="0" max="100" step="0.01"
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-1">Default commission rate for new agents</p>
+                    <p class="text-xs text-gray-500 mt-1">Default commission rate for new leaders (from freelancer deposits)</p>
                 </div>
             </div>
         </div>

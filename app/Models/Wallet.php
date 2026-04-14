@@ -11,6 +11,7 @@ class Wallet extends Model
 
     protected $fillable = [
         'user_id',
+        'agent_id',
         'main_balance',
         'pending_balance',
         'withdraw_balance',
@@ -51,6 +52,11 @@ class Wallet extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
     }
 
     public function addToMain(float $amount): void

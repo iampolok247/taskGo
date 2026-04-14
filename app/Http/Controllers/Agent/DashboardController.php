@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Commission;
+use App\Models\Referral;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,13 +57,21 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
+        // Referral stats for leader
+        $referralLink = route('register', ['ref' => $agent->referral_code]);
+        $totalReferrals = $agent->total_referrals ?? Referral::where('referrer_agent_id', $agent->id)->count();
+        $referralEarnings = Referral::where('referrer_agent_id', $agent->id)->sum('bonus_amount') ?? 0;
+
         return view('agent.dashboard', compact(
             'agent',
             'stats',
             'recentCommissions',
             'recentUsers',
             'monthlyEarnings',
-            'announcements'
+            'announcements',
+            'referralLink',
+            'totalReferrals',
+            'referralEarnings'
         ));
     }
 }

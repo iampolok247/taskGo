@@ -27,9 +27,10 @@ class ReferralController extends Controller
 
         // Referral link
         $referralLink = route('register', ['ref' => $user->referral_code]);
-        $signupBonus = \App\Models\Setting::getValue('signup_bonus', 0);
-        $taskCommissionPercent = \App\Models\Setting::getValue('referral_commission_percent', 0);
+        $signupBonus = \App\Models\Setting::getValue('referral_signup_bonus', 500);
+        $taskCommissionPercent = \App\Models\Setting::getValue('referral_task_commission', 5);
+        $minDeposit = \App\Models\Setting::getValue('referral_min_deposit', 500);
 
-        return view('user.referrals.index', compact('user', 'referrals', 'totalReferrals', 'activeReferrals', 'totalEarnings', 'referralLink', 'signupBonus', 'taskCommissionPercent'));
+        return view('user.referrals.index', compact('user', 'referrals', 'totalReferrals', 'activeReferrals', 'totalEarnings', 'referralLink', 'signupBonus', 'taskCommissionPercent', 'minDeposit'));
     }
 }

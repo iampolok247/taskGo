@@ -28,7 +28,7 @@ class SettingsController extends Controller
             'daily_task_limit', 'default_task_reward',
             'min_deposit', 'max_deposit', 'min_withdrawal', 'max_withdrawal',
             'withdrawal_fee_percent',
-            'referral_signup_bonus', 'referral_task_commission',
+            'referral_min_deposit', 'referral_signup_bonus', 'leader_direct_signup_bonus', 'referral_task_commission',
             'default_agent_commission',
         ];
 

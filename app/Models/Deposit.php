@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Agent;
+use App\Models\Referral;
+use App\Models\Setting;
+use App\Models\Transaction;
+use App\Models\Notification;
+use App\Models\Commission;
+use App\Models\User;
 
 class Deposit extends Model
 {
@@ -187,42 +194,69 @@ class Deposit extends Model
         ]);
     }
 
+    /**
+     * Process referral bonus on deposit approval.
+     * Bonus is paid ONLY if:
+     *  1. User was referred (referral record exists)
+     *  2. Bonus hasn't been paid yet (status = pending)
+     *  3. This deposit amount >= referral_min_deposit setting
+     */
     protected function processReferralBonus(): void
     {
         $user = $this->user;
 
-        if (!$user->referred_by) {
-            return;
-        }
-
-        // Check if this is the first deposit
+        // Find the referral record for this user (could be user or agent referral)
         $referral = Referral::where('referred_id', $user->id)->first();
 
-        if (!$referral || $referral->first_deposit_made) {
+        if (!$referral) {
             return;
         }
 
-        // Get referral bonus amount from settings
-        $bonusAmount = (float) Setting::getValue('referral_bonus_amount', 50);
+        // If bonus is already paid, nothing to do
+        if ($referral->status === 'paid') {
+            return;
+        }
+
+        // Check minimum deposit requirement from admin settings
+        $minDeposit = (float) Setting::getValue('referral_min_deposit', 500);
+
+        if ($this->amount < $minDeposit) {
+            return; // Deposit too small, referral bonus not triggered
+        }
+
+        // Mark first qualifying deposit on referral record
+        $referral->update([
+            'first_deposit_made' => true,
+            'first_deposit_amount' => $this->amount,
+            'qualified_at' => now(),
+        ]);
+
+        // Pay bonus based on referrer type
+        if ($referral->referrer_type === 'user' && $referral->referrer_id) {
+            $this->payUserReferralBonus($referral, $user);
+        } elseif ($referral->referrer_type === 'agent' && $referral->referrer_agent_id) {
+            $this->payAgentReferralBonus($referral, $user);
+        }
+    }
+
+    /**
+     * Pay referral bonus to a Freelancer referrer (user → user referral)
+     */
+    protected function payUserReferralBonus(Referral $referral, User $referredUser): void
+    {
+        $bonusAmount = (float) Setting::getValue('referral_signup_bonus', 500);
 
         if ($bonusAmount <= 0) {
             return;
         }
 
-        // Update referral record
-        $referral->update([
-            'first_deposit_made' => true,
-            'first_deposit_amount' => $this->amount,
-            'bonus_amount' => $bonusAmount,
-            'status' => 'qualified',
-            'qualified_at' => now(),
-        ]);
+        $referrer = User::find($referral->referrer_id);
+        if (!$referrer || !$referrer->wallet) {
+            return;
+        }
 
-        // Add bonus to referrer's wallet
-        $referrer = User::find($user->referred_by);
         $referrer->wallet->addToMain($bonusAmount);
 
-        // Create transaction for referrer
         Transaction::create([
             'user_id' => $referrer->id,
             'transaction_id' => 'REF' . strtoupper(uniqid()),
@@ -230,25 +264,60 @@ class Deposit extends Model
             'amount' => $bonusAmount,
             'currency' => 'BDT',
             'status' => 'completed',
-            'description' => 'Referral bonus from ' . $user->name,
+            'description' => 'Referral bonus – ' . $referredUser->name . ' made qualifying deposit',
             'transactionable_type' => Referral::class,
             'transactionable_id' => $referral->id,
             'balance_before' => $referrer->wallet->main_balance - $bonusAmount,
             'balance_after' => $referrer->wallet->main_balance,
         ]);
 
-        // Update referral status to paid
         $referral->update([
+            'bonus_amount' => $bonusAmount,
             'status' => 'paid',
             'paid_at' => now(),
         ]);
 
-        // Notify referrer
         Notification::create([
             'notifiable_type' => User::class,
             'notifiable_id' => $referrer->id,
             'title' => 'Referral Bonus Received!',
-            'message' => 'You earned ৳' . number_format($bonusAmount, 2) . ' referral bonus! ' . $user->name . ' made their first deposit.',
+            'message' => 'You earned ৳' . number_format($bonusAmount, 2) . ' referral bonus! ' . $referredUser->name . ' made a qualifying deposit.',
+            'type' => 'success',
+            'icon' => 'gift',
+        ]);
+    }
+
+    /**
+     * Pay referral bonus to a Leader referrer (agent → user referral)
+     */
+    protected function payAgentReferralBonus(Referral $referral, User $referredUser): void
+    {
+        $leaderBonus = (float) Setting::getValue('leader_direct_signup_bonus', 500);
+
+        if ($leaderBonus <= 0) {
+            return;
+        }
+
+        $agent = Agent::find($referral->referrer_agent_id);
+        if (!$agent) {
+            return;
+        }
+
+        // Add to agent earnings
+        $agent->increment('total_earnings', $leaderBonus);
+        $agent->increment('pending_earnings', $leaderBonus);
+
+        $referral->update([
+            'bonus_amount' => $leaderBonus,
+            'status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        Notification::create([
+            'notifiable_type' => Agent::class,
+            'notifiable_id' => $agent->id,
+            'title' => 'Referral Bonus Earned!',
+            'message' => 'You earned ৳' . number_format($leaderBonus, 2) . ' referral bonus! ' . $referredUser->name . ' made a qualifying deposit.',
             'type' => 'success',
             'icon' => 'gift',
         ]);

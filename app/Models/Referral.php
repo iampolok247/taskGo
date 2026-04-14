@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Agent;
+use App\Models\Transaction;
 
 class Referral extends Model
 {
@@ -11,6 +14,8 @@ class Referral extends Model
 
     protected $fillable = [
         'referrer_id',
+        'referrer_type',
+        'referrer_agent_id',
         'referred_id',
         'bonus_amount',
         'currency',
@@ -35,6 +40,11 @@ class Referral extends Model
     public function referrer()
     {
         return $this->belongsTo(User::class, 'referrer_id');
+    }
+
+    public function referrerAgent()
+    {
+        return $this->belongsTo(Agent::class, 'referrer_agent_id');
     }
 
     public function referred()
@@ -85,5 +95,23 @@ class Referral extends Model
     public function scopePaid($query)
     {
         return $query->where('status', 'paid');
+    }
+
+    /**
+     * Backwards-compatible alias used by views
+     */
+    public function getReferredUserAttribute()
+    {
+        return $this->referred;
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        return $this->referred ? $this->referred->isActive() : false;
+    }
+
+    public function getTotalEarnedAttribute(): float
+    {
+        return (float) ($this->referred && $this->referred->wallet ? $this->referred->wallet->total_earned : 0);
     }
 }

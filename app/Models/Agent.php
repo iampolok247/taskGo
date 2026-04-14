@@ -18,6 +18,7 @@ class Agent extends Authenticatable
         'password',
         'phone',
         'agent_code',
+        'referral_code',
         'commission_rate',
         'total_earnings',
         'pending_earnings',
@@ -53,6 +54,9 @@ class Agent extends Authenticatable
             if (empty($agent->agent_code)) {
                 $agent->agent_code = static::generateAgentCode();
             }
+            if (empty($agent->referral_code)) {
+                $agent->referral_code = static::generateReferralCode();
+            }
         });
     }
 
@@ -65,6 +69,15 @@ class Agent extends Authenticatable
         return $code;
     }
 
+    public static function generateReferralCode(): string
+    {
+        do {
+            $code = 'LDR' . strtoupper(substr(md5(uniqid()), 0, 6));
+        } while (static::where('referral_code', $code)->exists());
+
+        return $code;
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);
@@ -73,6 +86,11 @@ class Agent extends Authenticatable
     public function commissions()
     {
         return $this->hasMany(Commission::class);
+    }
+
+    public function referralRecords()
+    {
+        return $this->hasMany(Referral::class, 'referrer_agent_id');
     }
 
     public function notifications()

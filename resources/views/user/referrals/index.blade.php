@@ -74,27 +74,36 @@
 
     <!-- Commission Info -->
     <div class="bg-white rounded-xl p-4 shadow-sm">
-        <h3 class="font-semibold text-gray-900 mb-3">Referral Commission</h3>
+        <h3 class="font-semibold text-gray-900 mb-3">How Referral Works</h3>
         <div class="space-y-3">
-            <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <span class="text-green-600 font-bold">1</span>
+            <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
+                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <span class="text-yellow-600 font-bold">1</span>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-medium text-gray-900">Sign-up Bonus</p>
-                    <p class="text-xs text-gray-500">Earn when your referral signs up</p>
+                    <p class="text-sm font-medium text-gray-900">Share Your Code</p>
+                    <p class="text-xs text-gray-500">Share your referral code with a friend to join</p>
                 </div>
-                <p class="font-bold text-green-600">{{ format_currency($signupBonus, 2) }}</p>
             </div>
             <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                     <span class="text-blue-600 font-bold">2</span>
                 </div>
                 <div class="flex-1">
-                    <p class="text-sm font-medium text-gray-900">Task Commission</p>
-                    <p class="text-xs text-gray-500">Earn {{ $taskCommissionPercent }}% of their task earnings</p>
+                    <p class="text-sm font-medium text-gray-900">Minimum Deposit Required</p>
+                    <p class="text-xs text-gray-500">Your referral must deposit at least <strong>{{ format_currency($minDeposit, 2) }}</strong> to qualify</p>
                 </div>
-                <p class="font-bold text-blue-600">{{ $taskCommissionPercent }}%</p>
+                <p class="font-bold text-blue-600">{{ format_currency($minDeposit, 2) }}</p>
+            </div>
+            <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <span class="text-green-600 font-bold">3</span>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-900">Referral Bonus</p>
+                    <p class="text-xs text-gray-500">You earn this bonus once your referral makes the minimum deposit</p>
+                </div>
+                <p class="font-bold text-green-600">{{ format_currency($signupBonus, 2) }}</p>
             </div>
         </div>
     </div>
