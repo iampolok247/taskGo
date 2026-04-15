@@ -217,17 +217,20 @@ class Deposit extends Model
             return;
         }
 
-        // Check minimum deposit requirement from admin settings
+        // Check minimum deposit requirement from admin settings (in BDT)
         $minDeposit = (float) Setting::getValue('referral_min_deposit', 500);
 
-        if ($this->amount < $minDeposit) {
+        // Use converted_amount (BDT) for comparison, fallback to amount if not set
+        $depositAmountBDT = $this->converted_amount ?? $this->amount;
+
+        if ($depositAmountBDT < $minDeposit) {
             return; // Deposit too small, referral bonus not triggered
         }
 
         // Mark first qualifying deposit on referral record
         $referral->update([
             'first_deposit_made' => true,
-            'first_deposit_amount' => $this->amount,
+            'first_deposit_amount' => $depositAmountBDT,
             'qualified_at' => now(),
         ]);
 
