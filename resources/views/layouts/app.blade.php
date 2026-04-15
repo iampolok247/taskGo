@@ -7,6 +7,23 @@
     <meta name="theme-color" content="#6366f1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="TaskGo">
+    <meta name="apple-mobile-web-app-title" content="TaskGo">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    
+    <!-- Splash Screen for iOS -->
+    <link rel="apple-touch-startup-image" href="/icons/splash-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="/icons/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+    <link rel="apple-touch-startup-image" href="/icons/splash-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
+    <link rel="apple-touch-startup-image" href="/icons/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
 
     <title>@yield('title', 'Task Go') - Complete Tasks. Earn Rewards.</title>
 
@@ -102,6 +119,65 @@
             100% { background-position: -200% 0; }
         }
 
+        /* PWA Splash Screen */
+        .pwa-splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .pwa-splash.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .pwa-splash-logo {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: pulse-logo 2s infinite;
+        }
+        @keyframes pulse-logo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pwa-splash-text {
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+        .pwa-splash-tagline {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .pwa-splash-loader {
+            margin-top: 3rem;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Toast notifications */
         .toast-enter {
             animation: toast-in 0.3s ease-out;
@@ -121,6 +197,18 @@
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900 min-h-screen">
+    <!-- PWA Splash Screen -->
+    <div id="pwa-splash" class="pwa-splash">
+        <div class="pwa-splash-logo">
+            <svg class="w-16 h-16 text-primary-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+            </svg>
+        </div>
+        <div class="pwa-splash-text">TaskGo</div>
+        <div class="pwa-splash-tagline">Complete Tasks. Earn Rewards.</div>
+        <div class="pwa-splash-loader"></div>
+    </div>
+
     @yield('body')
 
     <!-- Toast Container -->
@@ -145,6 +233,21 @@
     </div>
 
     <script>
+        // Hide PWA Splash Screen
+        window.addEventListener('load', function() {
+            const splash = document.getElementById('pwa-splash');
+            if (splash) {
+                // Show splash for minimum 1.5 seconds for smooth experience
+                setTimeout(function() {
+                    splash.classList.add('hide');
+                    // Remove from DOM after animation
+                    setTimeout(function() {
+                        splash.remove();
+                    }, 500);
+                }, 1500);
+            }
+        });
+
         // Auto-hide toasts after 4 seconds
         document.addEventListener('DOMContentLoaded', function() {
             const toasts = document.querySelectorAll('#toast-container > div');
@@ -166,6 +269,19 @@
             }
             lastTouchEnd = now;
         }, false);
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registered: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
     </script>
 
     @stack('scripts')

@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Task Go - Complete Tasks, Earn Money!</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -57,6 +65,13 @@
                         <a href="#how-it-works" class="bg-white/10 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition border border-white/30">
                             <i class="fas fa-play mr-2"></i>How It Works
                         </a>
+                    </div>
+                    
+                    <!-- Install App Button -->
+                    <div id="install-container" class="mt-6 hidden">
+                        <button id="install-btn" class="bg-green-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-400 transition transform hover:scale-105 shadow-lg">
+                            <i class="fas fa-download mr-2"></i>Install App
+                        </button>
                     </div>
                     
                     <!-- Stats -->
@@ -256,5 +271,55 @@
             </div>
         </div>
     </footer>
+
+    <!-- PWA Install Script -->
+    <script>
+        let deferredPrompt;
+        const installContainer = document.getElementById('install-container');
+        const installBtn = document.getElementById('install-btn');
+
+        // Listen for the beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show the install button
+            installContainer.classList.remove('hidden');
+        });
+
+        // Handle install button click
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                return;
+            }
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response: ${outcome}`);
+            // Clear the deferred prompt
+            deferredPrompt = null;
+            installContainer.classList.add('hidden');
+        });
+
+        // Handle successful installation
+        window.addEventListener('appinstalled', () => {
+            console.log('TaskGo app installed successfully!');
+            installContainer.classList.add('hidden');
+            deferredPrompt = null;
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registered: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
