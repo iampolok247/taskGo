@@ -154,7 +154,7 @@
             <form action="{{ route('user.tasks.submit', $task) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 
-                @if($task->proof_type == 'url')
+                @if(in_array($task->proof_type, ['url', 'both']))
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Proof URL</label>
                         <input type="url" name="proof_url" value="{{ old('proof_url') }}" 
@@ -166,7 +166,7 @@
                     </div>
                 @endif
                 
-                @if($task->proof_type == 'screenshot' || $task->proof_type == 'image')
+                @if(in_array($task->proof_type, ['image', 'screenshot', 'both']))
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Proof Screenshot</label>
                         <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center" id="dropzone">

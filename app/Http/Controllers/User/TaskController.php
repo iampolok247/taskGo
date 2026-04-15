@@ -92,13 +92,18 @@ class TaskController extends Controller
             'proof_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ];
 
-        // Make proof_image required for screenshot type
-        if ($task->proof_type === 'screenshot') {
+        // Make proof_image required for image/screenshot/both type
+        if (in_array($task->proof_type, ['image', 'screenshot', 'both'])) {
             $rules['proof_image'] = 'required|image|mimes:jpeg,png,jpg,gif|max:5120';
         }
         
         // Make proof_url required for url type
         if ($task->proof_type === 'url') {
+            $rules['proof_url'] = 'required|url|max:500';
+        }
+        
+        // For 'both' type, both are required
+        if ($task->proof_type === 'both') {
             $rules['proof_url'] = 'required|url|max:500';
         }
 
