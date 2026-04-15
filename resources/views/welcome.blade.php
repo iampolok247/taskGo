@@ -62,9 +62,9 @@
                         <a href="{{ route('register') }}" class="bg-yellow-400 text-purple-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-rocket mr-2"></i>Start Earning Now
                         </a>
-                        <button id="install-btn-main" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-400 transition transform hover:scale-105 shadow-lg border border-green-400">
-                            <i class="fas fa-download mr-2"></i>Download App
-                        </button>
+                        <a href="/taskgo.apk" download="TaskGo.apk" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-400 transition transform hover:scale-105 shadow-lg border border-green-400 flex items-center justify-center">
+                            <i class="fab fa-android mr-2"></i>Download App
+                        </a>
                     </div>
                     
                     <!-- Stats -->
@@ -265,130 +265,8 @@
         </div>
     </footer>
 
-    <!-- PWA Install Script -->
+    <!-- Service Worker for PWA -->
     <script>
-        let deferredPrompt = null;
-        const installBtnMain = document.getElementById('install-btn-main');
-        let pwaReady = false;
-
-        // Listen for the beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('PWA install prompt available!');
-            e.preventDefault();
-            deferredPrompt = e;
-            pwaReady = true;
-            // Update button to show it's ready
-            installBtnMain.innerHTML = '<i class="fas fa-download mr-2"></i>Install App';
-        });
-
-        // Handle install button click
-        installBtnMain.addEventListener('click', async () => {
-            console.log('Install button clicked, deferredPrompt:', deferredPrompt);
-            
-            if (deferredPrompt) {
-                // PWA install available - show native prompt
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response: ${outcome}`);
-                if (outcome === 'accepted') {
-                    installBtnMain.innerHTML = '<i class="fas fa-check mr-2"></i>Installing...';
-                }
-                deferredPrompt = null;
-            } else {
-                // Check if already installed (standalone mode)
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                    alert('✅ App ইতিমধ্যে Install আছে!');
-                    return;
-                }
-                
-                // PWA not available - try to trigger install via URL scheme for Android Chrome
-                const isAndroid = /Android/.test(navigator.userAgent);
-                const isChrome = /Chrome/.test(navigator.userAgent);
-                
-                if (isAndroid && isChrome) {
-                    // Show a nice modal instead of alert
-                    showInstallModal();
-                } else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                    showInstallModal('ios');
-                } else {
-                    showInstallModal('desktop');
-                }
-            }
-        });
-
-        function showInstallModal(type = 'android') {
-            let content = '';
-            if (type === 'ios') {
-                content = `
-                    <div class="text-center">
-                        <div class="text-5xl mb-4">📱</div>
-                        <h3 class="text-xl font-bold mb-4">iOS এ Install করুন</h3>
-                        <div class="text-left space-y-3 text-gray-600">
-                            <p>1️⃣ Safari browser এ এই সাইট open করুন</p>
-                            <p>2️⃣ নিচে <span class="inline-block px-2 py-1 bg-gray-200 rounded">⬆️ Share</span> button tap করুন</p>
-                            <p>3️⃣ <strong>"Add to Home Screen"</strong> select করুন</p>
-                            <p>4️⃣ <strong>"Add"</strong> tap করুন</p>
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'android') {
-                content = `
-                    <div class="text-center">
-                        <div class="text-5xl mb-4">📱</div>
-                        <h3 class="text-xl font-bold mb-4">App Install করুন</h3>
-                        <div class="text-left space-y-3 text-gray-600">
-                            <p>1️⃣ উপরে ডানে <span class="inline-block px-2 py-1 bg-gray-200 rounded font-bold">⋮</span> (3 dot menu) tap করুন</p>
-                            <p>2️⃣ <strong>"Install app"</strong> বা <strong>"Add to Home screen"</strong> select করুন</p>
-                            <p>3️⃣ <strong>"Install"</strong> tap করুন</p>
-                        </div>
-                        <div class="mt-4 p-3 bg-yellow-50 rounded-lg text-sm text-yellow-800">
-                            💡 Chrome browser এ সবচেয়ে ভালো কাজ করে
-                        </div>
-                    </div>
-                `;
-            } else {
-                content = `
-                    <div class="text-center">
-                        <div class="text-5xl mb-4">�</div>
-                        <h3 class="text-xl font-bold mb-4">Desktop এ Install করুন</h3>
-                        <div class="text-left space-y-3 text-gray-600">
-                            <p>Chrome browser এ address bar এর ডানে install icon (⊕) click করুন</p>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Create modal
-            const modal = document.createElement('div');
-            modal.id = 'install-modal';
-            modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4';
-            modal.innerHTML = `
-                <div class="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
-                    ${content}
-                    <button onclick="document.getElementById('install-modal').remove()" 
-                        class="mt-6 w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition">
-                        বুঝেছি
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            // Close on backdrop click
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.remove();
-            });
-        }
-
-        // Handle successful installation
-        window.addEventListener('appinstalled', () => {
-            console.log('TaskGo app installed successfully!');
-            deferredPrompt = null;
-            // Change button text after install
-            installBtnMain.innerHTML = '<i class="fas fa-check mr-2"></i>App Installed!';
-            installBtnMain.classList.remove('bg-green-500', 'hover:bg-green-400');
-            installBtnMain.classList.add('bg-gray-500', 'cursor-not-allowed');
-        });
-
         // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
