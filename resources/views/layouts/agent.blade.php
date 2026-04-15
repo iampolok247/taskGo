@@ -193,6 +193,16 @@
                 </a>
             </nav>
 
+            <!-- Download App Button -->
+            <div class="px-4 py-3">
+                <a href="{{ route('download.app') }}" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.523 2H6.477C5.1 2 4 3.1 4 4.477v15.046C4 20.9 5.1 22 6.477 22h11.046C18.9 22 20 20.9 20 19.523V4.477C20 3.1 18.9 2 17.523 2zM12 17.5l-4-4h2.5V9h3v4.5H16l-4 4z"/>
+                    </svg>
+                    Download App
+                </a>
+            </div>
+
             <!-- Logout Button -->
             <div class="p-4 bg-white border-t border-gray-100 safe-area-bottom flex-shrink-0">
                 <form method="POST" action="{{ route('agent.logout') }}">
