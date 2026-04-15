@@ -295,6 +295,54 @@ class Deposit extends Model
             'type' => 'success',
             'icon' => 'gift',
         ]);
+
+        // If the referrer freelancer is under a leader, pay commission to the leader
+        $this->payLeaderReferralCommission($referrer, $bonusAmountBDT);
+    }
+
+    /**
+     * Pay commission to a Leader when their freelancer earns referral bonus
+     * Leader gets X% of the referral bonus earned by their freelancer
+     */
+    protected function payLeaderReferralCommission(User $freelancer, float $bonusAmountBDT): void
+    {
+        // Check if freelancer has a leader
+        if (!$freelancer->agent_id) {
+            return;
+        }
+
+        $agent = $freelancer->agent;
+        if (!$agent) {
+            return;
+        }
+
+        // Get leader referral commission rate from settings (default 5%)
+        $commissionRate = (float) Setting::getValue('leader_referral_commission', 5);
+
+        if ($commissionRate <= 0) {
+            return;
+        }
+
+        // Calculate commission on the referral bonus
+        $commissionAmountBDT = ($bonusAmountBDT * $commissionRate) / 100;
+
+        if ($commissionAmountBDT <= 0) {
+            return;
+        }
+
+        // Add to agent earnings (stored in BDT for agents)
+        $agent->increment('total_earnings', $commissionAmountBDT);
+        $agent->increment('pending_earnings', $commissionAmountBDT);
+
+        // Notify the leader
+        Notification::create([
+            'notifiable_type' => Agent::class,
+            'notifiable_id' => $agent->id,
+            'title' => 'Referral Commission Earned!',
+            'message' => 'You earned ৳' . number_format($commissionAmountBDT, 2) . ' commission (' . $commissionRate . '%) from ' . $freelancer->name . '\'s referral bonus.',
+            'type' => 'success',
+            'icon' => 'currency-dollar',
+        ]);
     }
 
     /**

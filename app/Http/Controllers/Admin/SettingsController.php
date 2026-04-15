@@ -29,7 +29,7 @@ class SettingsController extends Controller
             'min_deposit', 'max_deposit', 'min_withdrawal', 'max_withdrawal',
             'withdrawal_fee_percent',
             'referral_min_deposit', 'referral_signup_bonus', 'leader_direct_signup_bonus', 'referral_task_commission',
-            'default_agent_commission',
+            'default_agent_commission', 'leader_referral_commission',
         ];
 
         foreach ($settingsKeys as $key) {

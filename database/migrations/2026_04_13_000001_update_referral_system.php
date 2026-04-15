@@ -54,6 +54,7 @@ return new class extends Migration
         \App\Models\Setting::setValue('referral_signup_bonus', '500', 'number', 'referral');
         \App\Models\Setting::setValue('referral_task_commission', '5', 'number', 'referral');
         \App\Models\Setting::setValue('leader_direct_signup_bonus', '500', 'number', 'referral');
+        \App\Models\Setting::setValue('leader_referral_commission', '5', 'number', 'referral');
     }
 
     public function down(): void

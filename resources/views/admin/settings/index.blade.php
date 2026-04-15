@@ -184,6 +184,13 @@
                         class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                     <p class="text-xs text-gray-500 mt-1">Default commission rate for new leaders (from freelancer deposits)</p>
                 </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Leader Referral Commission (%)</label>
+                    <input type="number" name="leader_referral_commission" value="{{ $settings['leader_referral_commission'] ?? 5 }}" min="0" max="100" step="0.01"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Commission (%) a leader earns when their freelancer gets a referral bonus</p>
+                </div>
             </div>
         </div>
 
