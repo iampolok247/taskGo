@@ -34,6 +34,19 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+// APK Download Route
+Route::get('/download-app', function () {
+    $apkPath = public_path('taskgo.apk');
+    
+    if (!file_exists($apkPath)) {
+        abort(404, 'APK file not found');
+    }
+    
+    return response()->download($apkPath, 'TaskGo.apk', [
+        'Content-Type' => 'application/vnd.android.package-archive',
+    ]);
+})->name('download.app');
+
 // Storage file serving (for cPanel where symlinks don't work)
 Route::get('/storage/{path}', function ($path) {
     $fullPath = storage_path('app/public/' . $path);

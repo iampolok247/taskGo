@@ -62,7 +62,7 @@
                         <a href="{{ route('register') }}" class="bg-yellow-400 text-purple-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition transform hover:scale-105 shadow-lg">
                             <i class="fas fa-rocket mr-2"></i>Start Earning Now
                         </a>
-                        <a href="/taskgo.apk" download="TaskGo.apk" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-400 transition transform hover:scale-105 shadow-lg border border-green-400 flex items-center justify-center">
+                        <a href="{{ route('download.app') }}" class="bg-green-500 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-400 transition transform hover:scale-105 shadow-lg border border-green-400 flex items-center justify-center">
                             <i class="fab fa-android mr-2"></i>Download App
                         </a>
                     </div>
