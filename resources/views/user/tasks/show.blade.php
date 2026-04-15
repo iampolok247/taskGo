@@ -42,7 +42,11 @@
     <div class="bg-white rounded-xl p-4 shadow-sm">
         <h3 class="font-semibold text-gray-900 mb-3">Description</h3>
         <div class="prose prose-sm text-gray-600">
-            {!! nl2br(e($task->description)) !!}
+            {!! preg_replace(
+                '/(https?:\/\/[^\s<]+)/',
+                '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary-600 hover:text-primary-700 underline break-all">$1</a>',
+                nl2br(e($task->description))
+            ) !!}
         </div>
     </div>
 
