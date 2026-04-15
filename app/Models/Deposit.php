@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Agent;
+use App\Models\Currency;
 use App\Models\Referral;
 use App\Models\Setting;
 use App\Models\Transaction;
@@ -244,12 +245,13 @@ class Deposit extends Model
 
     /**
      * Pay referral bonus to a Freelancer referrer (user → user referral)
+     * Bonus is set in BDT in admin settings, but must be converted to wallet currency
      */
     protected function payUserReferralBonus(Referral $referral, User $referredUser): void
     {
-        $bonusAmount = (float) Setting::getValue('referral_signup_bonus', 500);
+        $bonusAmountBDT = (float) Setting::getValue('referral_signup_bonus', 500);
 
-        if ($bonusAmount <= 0) {
+        if ($bonusAmountBDT <= 0) {
             return;
         }
 
@@ -258,24 +260,29 @@ class Deposit extends Model
             return;
         }
 
-        $referrer->wallet->addToMain($bonusAmount);
+        // Convert BDT to wallet currency (USD base)
+        // BDT → USD: divide by BDT exchange rate
+        $bdtCurrency = Currency::getByCode('BDT');
+        $bonusAmountUSD = $bdtCurrency ? $bdtCurrency->toUSD($bonusAmountBDT) : $bonusAmountBDT;
+
+        $referrer->wallet->addToMain($bonusAmountUSD);
 
         Transaction::create([
             'user_id' => $referrer->id,
             'transaction_id' => 'REF' . strtoupper(uniqid()),
             'type' => 'referral_bonus',
-            'amount' => $bonusAmount,
-            'currency' => 'BDT',
+            'amount' => $bonusAmountUSD,
+            'currency' => 'USD',
             'status' => 'completed',
-            'description' => 'Referral bonus – ' . $referredUser->name . ' made qualifying deposit',
+            'description' => 'Referral bonus – ' . $referredUser->name . ' made qualifying deposit (৳' . number_format($bonusAmountBDT, 2) . ')',
             'transactionable_type' => Referral::class,
             'transactionable_id' => $referral->id,
-            'balance_before' => $referrer->wallet->main_balance - $bonusAmount,
+            'balance_before' => $referrer->wallet->main_balance - $bonusAmountUSD,
             'balance_after' => $referrer->wallet->main_balance,
         ]);
 
         $referral->update([
-            'bonus_amount' => $bonusAmount,
+            'bonus_amount' => $bonusAmountBDT, // Store original BDT amount
             'status' => 'paid',
             'paid_at' => now(),
         ]);
@@ -284,7 +291,7 @@ class Deposit extends Model
             'notifiable_type' => User::class,
             'notifiable_id' => $referrer->id,
             'title' => 'Referral Bonus Received!',
-            'message' => 'You earned ৳' . number_format($bonusAmount, 2) . ' referral bonus! ' . $referredUser->name . ' made a qualifying deposit.',
+            'message' => 'You earned ৳' . number_format($bonusAmountBDT, 2) . ' referral bonus! ' . $referredUser->name . ' made a qualifying deposit.',
             'type' => 'success',
             'icon' => 'gift',
         ]);
