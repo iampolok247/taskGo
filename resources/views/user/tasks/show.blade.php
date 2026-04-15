@@ -46,6 +46,28 @@
         </div>
     </div>
 
+    <!-- Task URL -->
+    @if($task->task_url)
+    <div class="bg-white rounded-xl p-4 shadow-sm">
+        <h3 class="font-semibold text-gray-900 mb-3">Task Link</h3>
+        <a href="{{ $task->task_url }}" target="_blank" rel="noopener noreferrer" 
+            class="flex items-center gap-3 p-3 bg-primary-50 rounded-xl text-primary-600 hover:bg-primary-100 transition-colors">
+            <div class="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm">Open Task Link</p>
+                <p class="text-xs text-primary-400 truncate">{{ $task->task_url }}</p>
+            </div>
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </a>
+    </div>
+    @endif
+
     <!-- Task Instructions -->
     <div class="bg-white rounded-xl p-4 shadow-sm">
         <h3 class="font-semibold text-gray-900 mb-3">Instructions</h3>
