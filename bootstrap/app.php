@@ -17,15 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'user' => \App\Http\Middleware\UserMiddleware::class,
         ]);
 
-        // Redirect unauthenticated users to the correct login page based on guard
+        // Send all guest redirects to the public shutdown notice.
         $middleware->redirectGuestsTo(function ($request) {
-            if ($request->is('admin/*') || $request->routeIs('admin.*')) {
-                return route('admin.login');
-            }
-            if ($request->is('agent/*') || $request->routeIs('agent.*')) {
-                return route('agent.login');
-            }
-            return route('login');
+            return route('home');
         });
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\PaymentMethodController as AdminPaymentMethodController;
 use Illuminate\Support\Facades\Route;
 
+$shutdownRedirect = static fn () => redirect()->route('home');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,17 +37,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // APK Download Route
-Route::get('/download-app', function () {
-    $apkPath = public_path('taskgo.apk');
-    
-    if (!file_exists($apkPath)) {
-        abort(404, 'APK file not found');
-    }
-    
-    return response()->download($apkPath, 'TaskGo.apk', [
-        'Content-Type' => 'application/vnd.android.package-archive',
-    ]);
-})->name('download.app');
+Route::get('/download-app', $shutdownRedirect)->name('download.app');
 
 // Storage file serving (for cPanel where symlinks don't work)
 Route::get('/storage/{path}', function ($path) {
@@ -70,13 +62,13 @@ Route::get('/', function () {
 
 // ==================== USER AUTHENTICATION ====================
 // Login form - accessible always (for role tab switching)
-Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('login');
-Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('register');
+Route::get('/login', $shutdownRedirect)->name('login');
+Route::get('/register', $shutdownRedirect)->name('register');
 
 // Login/Register POST - only for guests
 Route::middleware('guest:web')->group(function () {
-    Route::post('/login', [UserAuthController::class, 'login']);
-    Route::post('/register', [UserAuthController::class, 'register']);
+    Route::post('/login', $shutdownRedirect);
+    Route::post('/register', $shutdownRedirect);
 });
 
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -124,11 +116,11 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
 // ==================== AGENT AUTHENTICATION ====================
 Route::prefix('agent')->name('agent.')->group(function () {
     // Login form - accessible always (for role tab switching)
-    Route::get('/login', [AgentAuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', $shutdownRedirect)->name('login');
 
     // Login POST - only for guests
     Route::middleware('guest:agent')->group(function () {
-        Route::post('/login', [AgentAuthController::class, 'login']);
+        Route::post('/login', $shutdownRedirect);
     });
 
     Route::post('/logout', [AgentAuthController::class, 'logout'])->name('logout')->middleware('auth:agent');
@@ -171,11 +163,11 @@ Route::middleware(['auth:agent', 'agent'])->prefix('agent')->name('agent.')->gro
 // ==================== ADMIN AUTHENTICATION ====================
 Route::prefix('admin')->name('admin.')->group(function () {
     // Login form - accessible always (for role tab switching)
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login', $shutdownRedirect)->name('login');
 
     // Login POST - only for guests
     Route::middleware('guest:admin')->group(function () {
-        Route::post('/login', [AdminAuthController::class, 'login']);
+        Route::post('/login', $shutdownRedirect);
     });
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout')->middleware('auth:admin');

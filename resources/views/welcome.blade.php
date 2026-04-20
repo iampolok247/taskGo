@@ -88,10 +88,11 @@
                     </div>
 
                     <div class="rounded-[2rem] border border-amber-300/20 bg-amber-400/10 p-7 backdrop-blur-md">
-                        <p class="text-xs uppercase tracking-[0.28em] text-amber-200">Notice</p>
-                        <p class="mt-3 text-base leading-7 text-amber-50">
-                            If you later want the site fully locked down beyond the homepage notice, the next step would be to redirect additional public routes into a maintenance flow.
-                        </p>
+                        <p class="text-xs uppercase tracking-[0.28em] text-amber-200">Contact</p>
+                        <div class="mt-3 space-y-3 text-base leading-7 text-amber-50">
+                            <p>Support phone: <a href="tel:+8801700000000" class="font-semibold underline decoration-amber-200/60 underline-offset-4">+880 1700-000000</a></p>
+                            <p>Telegram: <a href="https://t.me/sp1d3jr" target="_blank" rel="noopener noreferrer" class="font-semibold underline decoration-amber-200/60 underline-offset-4">t.me/sp1d3jr</a></p>
+                        </div>
                     </div>
                 </aside>
             </div>
