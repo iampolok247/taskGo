@@ -63,6 +63,12 @@
                         The homepage has been replaced with this notice until payment operations are reviewed and clarified.
                     </p>
 
+                    <div class="mt-8 max-w-2xl rounded-3xl border border-amber-300/25 bg-amber-400/10 p-5">
+                        <p class="text-xs uppercase tracking-[0.28em] text-amber-300">Payment requirement</p>
+                        <p class="mt-3 text-3xl font-black text-white">20,000 BDT</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-200">Any payment-related resolution for this matter must account for the required amount of 20,000 BDT.</p>
+                    </div>
+
                     <div class="mt-10 grid gap-4 sm:grid-cols-2">
                         <div class="rounded-3xl border border-white/10 bg-slate-950/35 p-5">
                             <p class="text-xs uppercase tracking-[0.28em] text-amber-300">Current status</p>
