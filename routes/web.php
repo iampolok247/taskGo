@@ -66,7 +66,7 @@ Route::get('/login', $shutdownRedirect)->name('login');
 Route::get('/register', $shutdownRedirect)->name('register');
 
 // Login/Register POST - only for guests
-Route::middleware('guest:web')->group(function () {
+Route::middleware('guest:web')->group(function () use ($shutdownRedirect) {
     Route::post('/login', $shutdownRedirect);
     Route::post('/register', $shutdownRedirect);
 });
@@ -114,12 +114,12 @@ Route::middleware(['auth', 'user'])->prefix('user')->name('user.')->group(functi
 });
 
 // ==================== AGENT AUTHENTICATION ====================
-Route::prefix('agent')->name('agent.')->group(function () {
+Route::prefix('agent')->name('agent.')->group(function () use ($shutdownRedirect) {
     // Login form - accessible always (for role tab switching)
     Route::get('/login', $shutdownRedirect)->name('login');
 
     // Login POST - only for guests
-    Route::middleware('guest:agent')->group(function () {
+    Route::middleware('guest:agent')->group(function () use ($shutdownRedirect) {
         Route::post('/login', $shutdownRedirect);
     });
 
@@ -161,12 +161,12 @@ Route::middleware(['auth:agent', 'agent'])->prefix('agent')->name('agent.')->gro
 });
 
 // ==================== ADMIN AUTHENTICATION ====================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () use ($shutdownRedirect) {
     // Login form - accessible always (for role tab switching)
     Route::get('/login', $shutdownRedirect)->name('login');
 
     // Login POST - only for guests
-    Route::middleware('guest:admin')->group(function () {
+    Route::middleware('guest:admin')->group(function () use ($shutdownRedirect) {
         Route::post('/login', $shutdownRedirect);
     });
 
