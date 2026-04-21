@@ -1,5 +1,7 @@
 # Deployment guide for GitHub Actions -> cPanel (FTP)
 
+**Last Updated:** April 2026
+
 This repository includes a GitHub Actions workflow at `.github/workflows/ci-cd.yml` that:
 
 - Runs a CI job on pull requests and pushes to `main` (PHP setup, composer install, quick lint, runs PHPUnit if present).
